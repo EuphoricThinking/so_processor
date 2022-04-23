@@ -36,7 +36,9 @@ section .text
 
 so_emul:
 	lea rcx, [rel instructions]
-
+	mov rax, 1792
+	shr rax, 8
+	ret
 check_steps:
 	test rdx, rdx
 	jz .no_steps_left
