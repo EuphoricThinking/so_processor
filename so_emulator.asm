@@ -26,10 +26,6 @@ Z: resb 1 	;SETcc instructions!
 section .text
 
 so_emul:
-	mov rax, 1
-	shl rax, 8
-;	shl rax, A_POS
-;	ret
 
 check_steps:
 	test rdx, rdx
@@ -38,7 +34,8 @@ check_steps:
 ;	jmp [rel jump + 16]
 
 .no_steps_left:
-	mov byte [rel A], 1
+	mov byte [rel C], 1
+	mov byte [rel Z], 1
 ;	movsx rax, byte [rel A]
 ;	ret
 
@@ -47,6 +44,29 @@ check_steps:
 ;	mov rax, rdx
 ;	ret
 	shl rdx, A_POS
+	or rax, rdx
+
+	movsx rdx, byte [rel D]
+	shl rdx, D_POS
+	or rax, rdx
+
+	movsx rdx, byte [rel X]
+	shl rdx, X_POS
+	or rax, rdx
+
+	movsx rdx, byte [rel Y]
+	shl rdx, Y_POS
+	or rax, rdx
+
+	movsx rdx, byte [rel PC]
+	shl rdx, PC_POS
+	or rax, rdx
+
+	movsx rdx, byte [rel C]
+	shl rdx, C_POS
+	or rax, rdx
+
+	movsx rdx, byte [rel Z]
 	or rax, rdx
 
 	ret
