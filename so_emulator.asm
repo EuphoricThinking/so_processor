@@ -16,12 +16,37 @@ Z: resb 1 	;SETcc instructions!
 section .text
 
 so_emul:
+
+.check_steps:
+	test rdx, rdx
+	jz .no_steps_left
+
 	jmp [rel jump + 16]
+
+.no_steps_left:
+	ret
 
 procedure1:
 	mov rax, 3
-	ret
+	jmp .check_steps
 
 procedure2:
 	mov rax, 4
-	ret
+	jmp .check_steps
+
+MOV:
+	mov rax, 0
+	jmp .check_steps
+
+OR:
+	mov rax, 2
+	jmp .check_steps
+
+ADD:
+	mov rax, 4
+	jmp .check_steps
+
+SUB:
+	mov rax, 5
+	jmp .check_steps
+
