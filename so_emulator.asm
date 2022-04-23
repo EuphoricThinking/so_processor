@@ -12,7 +12,11 @@ Z_POS equ 0 ; nothing is needed
 section .rodata
 align 16
 jump: dq procedure1, procedure1, procedure2
-instructions: dq MOV, EMPT, OR, EMPT, ADD, SUB, ADC, SBB, XCHG, MOVI, CLC, STC, XORI, ADDI, CMPI, RCR, JMP, EMPT, JNC, JC, JNZ, JZ
+instructions: dq MOV, EMPT, OR, EMPT, ADD, SUB, ADC, SBB, XCHG, \
+		 MOVI, \
+		 CLC, STC, \
+		 XORI, ADDI, CMPI, RCR, JMP, \
+		 EMPT, JNC, JC, JNZ, JZ
 
 section .bss
 align 8
