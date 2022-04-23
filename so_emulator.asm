@@ -12,6 +12,7 @@ Z_POS equ 0 ; nothing is needed
 section .rodata
 align 16
 jump: dq procedure1, procedure1, procedure2
+instructions: dq MOV, EMPT, OR, EMPT, ADD, SUB, ADC, SBB, XCHG, MOVI, CLC, STC, XORI, ADDI, CMPI, RCR, JMP, EMPT, JNC, JC, JNZ, JZ
 
 section .bss
 align 8
@@ -93,5 +94,55 @@ ADD:
 
 SUB:
 	mov rax, 5
+	jmp check_steps
+
+ADC:
+	mov rax, 6
+	jmp check_steps
+
+SBB:
+	mov rax, 7
+	jmp check_steps
+
+MOVI:
+	jmp check_steps
+
+XORI:
+	jmp check_steps
+
+ADDI:
+	jmp check_steps
+
+EMPT:
+	jmp check_steps
+
+CMPI:
+	jmp check_steps
+
+RCR:
+	jmp check_steps
+
+CLC:
+	jmp check_steps
+
+STC:
+	jmp check_steps
+
+JMP:
+	jmp check_steps
+
+JNC:
+	jmp check_steps
+
+JC:
+	jmp check_steps
+
+JNZ:
+	jmp check_steps
+
+JZ:
+	jmp check_steps
+
+BRK:
 	jmp check_steps
 
