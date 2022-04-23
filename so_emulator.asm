@@ -159,7 +159,7 @@ check_steps:
 	ret
 
 after_instruction:
-	add di, 16
+	add rdi, 16
 	jmp after_instruction
 
 procedure1:
