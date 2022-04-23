@@ -13,6 +13,8 @@ GROUP_SELECTOR equ 0xC000
 SECOND_GROUP equ 0x4000
 THIRD_GROUP equ 0x8000
 
+THIRD_GR_ADDR_CONST equ 10
+
 CLEAR_LEFT_A1 equ 5
 CLEAR_RIGHT_AFTER_LEFT equ 13
 
@@ -100,7 +102,11 @@ check_steps:
 ;	mov r9w, al ; imm8
 
 .third_group:
-	mov ax, di
+	mov r9, rax
+	shr r9, 8
+	and r9, 1
+
+	jmp [rcx + THIRD_GR_ADDR_CONST + r9]
 
 .fourth_group:
 	mov ax, di
