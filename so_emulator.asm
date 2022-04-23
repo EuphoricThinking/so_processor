@@ -79,10 +79,6 @@ check_steps:
 ;	jmp [rel jump + 16]
 
 .first_group:
-;	lea r10, [rel instructions]
-;	jmp [rel instructions + 8*rax]
-;	jmp [r10 + 8*rax]
-;	jmp [rel instructions + 72]
 	jmp [rcx + 8*rax]
 
 .second_group:
