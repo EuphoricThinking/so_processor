@@ -46,7 +46,6 @@ check_steps:
 	mov ax, GROUP_SELECTOR
 	and ax, di
 
-	add di, 16
 	dec rdx
 
 	test ax, ax
@@ -64,6 +63,8 @@ check_steps:
 	jmp check_steps
 
 ;	jmp [rel jump + 16]
+.first_group:
+	mov al, dil
 
 .no_steps_left:
 ;	mov byte [rel C], 1
@@ -99,6 +100,10 @@ check_steps:
 	or rax, rdx
 
 	ret
+
+after_instruction:
+	add di, 16
+	jmp check_steps
 
 procedure1:
 	mov rax, 3
