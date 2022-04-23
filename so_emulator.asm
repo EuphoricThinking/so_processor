@@ -9,6 +9,10 @@ PC_POS equ 24
 C_POS equ 8
 Z_POS equ 0 ; nothing is needed
 
+GROUP_SELECTOR equ 0xC000
+SECOND_GROUP equ 0x4000
+THIRD_GROUP equ 0x8000
+
 section .rodata
 align 16
 jump: dq procedure1, procedure1, procedure2
@@ -34,20 +38,33 @@ so_emul:
 
 check_steps:
 	test rdx, rdx
-;	jz .no_steps_left
+	jz .no_steps_left
+
+	cmp di, 0xFFFF
+	je .no_steps_left
+
+	mov ax, GROUP_SELECTOR
+	and ax, di
+
+	add di, 16
+	dec rdx
+
+	test ax, ax
+	jz .first_group
+
+	cmp ax, GROUP_SELECTOR
+
+	jmp check_steps
 
 ;	jmp [rel jump + 16]
 
 .no_steps_left:
-	mov byte [rel C], 1
-	mov byte [rel Z], 1
-;	movsx rax, byte [rel A]
-;	ret
+;	mov byte [rel C], 1
+;	mov byte [rel Z], 1
 
 	xor rax, rax
 	movsx rdx, byte [rel A]
-;	mov rax, rdx
-;	ret
+
 	shl rdx, A_POS
 	or rax, rdx
 
