@@ -14,8 +14,9 @@ SECOND_GROUP equ 0x4000
 THIRD_GROUP equ 0x8000
 
 CLEAR_LEFT_A1 equ 5
-CLEAR_RIGHT_A1 equ 13
+CLEAR_RIGHT_AFTER_LEFT equ 13
 
+CLEAR_LEFT_A2 equ 2
 CLEAR_RIGHT_A2 equ 11
 
 section .rodata
@@ -41,9 +42,10 @@ section .text
 
 so_emul:
 	lea rcx, [rel instructions]
-	mov rax, 14336
-	shr rax, CLEAR_RIGHT_A2
-	ret
+;	mov rax, 1
+;	shl rax, 8
+;	shr rax, 8
+;	ret
 check_steps:
 	test rdx, rdx
 	jz .no_steps_left
@@ -76,17 +78,25 @@ check_steps:
 
 .first_group:
 	mov r10, rax ; arg1
-	shr r10, 8   ; divide by 0x100
+	shl r10, CLEAR_LEFT_A1   ; divide by 0x100
+	shr r10, CLEAR_RIGHT_AFTER_LEFT
 
 	mov r9, rax  ; arg2
-	shr r9, 11
+	shr r9, CLEAR_RIGHT_A2  ; nothing before
 
 	jmp [rcx + 8*rax]
 
 .second_group:
-	mov r10, rax
-	shl r10, 5
+	mov r10, rax  ; arg1
+	shl r10, CLEAR_LEFT_A1
+	shr r10, CLEAR_RIGHT_AFTER_LEFT
 
+	mov r9b, al  ; imm8
+
+	shl rax, CLEAR_LEFT_A2
+	shr rax, CLEAR_RIGHT_AFTER_LEFT
+
+	jmp [rcx + 8*(rax + 1)]
 ;	mov r9w, al ; imm8
 
 .third_group:
