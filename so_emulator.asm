@@ -13,6 +13,9 @@ GROUP_SELECTOR equ 0xC000
 SECOND_GROUP equ 0x4000
 THIRD_GROUP equ 0x8000
 
+CLEAR_LEFT equ 5
+CLEAR_RIGHT equ 13
+
 section .rodata
 align 16
 jump: dq procedure1, procedure1, procedure2
@@ -36,8 +39,9 @@ section .text
 
 so_emul:
 	lea rcx, [rel instructions]
-	mov rax, 10240
-	shr rax, 11
+	mov rax, 1792
+	shl rax, CLEAR_LEFT
+	shr rax, CLEAR_RIGHT
 	ret
 check_steps:
 	test rdx, rdx
@@ -79,7 +83,10 @@ check_steps:
 	jmp [rcx + 8*rax]
 
 .second_group:
-	mov ax, di
+	mov r10, rax
+	shl r10, 5
+
+;	mov r9w, al ; imm8
 
 .third_group:
 	mov ax, di
