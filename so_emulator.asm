@@ -31,7 +31,7 @@ check_steps:
 
 .no_steps_left:
 	xor rax, rax
-	movsx rdx, A
+	movsx rdx, byte [rel A]
 ;	shr rdx, 
 
 
