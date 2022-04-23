@@ -1,13 +1,13 @@
 global so_emul
 section .data
 align 16
-jump: dq procedure1, procedure2
+jump: dq procedure1, procedure1, procedure2
 
 section .text
 so_emul:
 ;	push .procedure1
 ;	push .procedure2
-	jmp [rel jump]
+	jmp [rel jump + 16]
 
 procedure1:
 	mov rax, 3
