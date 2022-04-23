@@ -35,17 +35,6 @@ Z: resb 1 	;SETcc instructions!
 section .text
 
 so_emul:
-;	mov rax, 1
-;	mov r9, 8
-;	lea r10, [rax + r9]
-;	mov rax, r10
-;	ret
-;	jmp [r10]
-;	mov r9, [rdi]
-;	cmp r9w, 0x0002
-;	jne check_steps
-;	mov rax, 17
-;	ret
 	lea rcx, [rel instructions]
 
 check_steps:
