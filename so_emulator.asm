@@ -35,6 +35,12 @@ Z: resb 1 	;SETcc instructions!
 section .text
 
 so_emul:
+;	mov rax, 1
+;	mov r9, 8
+;	lea r10, [rax + r9]
+;	mov rax, r10
+;	ret
+;	jmp [r10]
 
 check_steps:
 	test rdx, rdx
@@ -43,21 +49,22 @@ check_steps:
 	cmp di, 0xFFFF
 	je .no_steps_left
 
-	mov ax, GROUP_SELECTOR
-	and ax, di
-
+	mov ax, di
 	dec rdx
 
-	test ax, ax
+	mov r9w, GROUP_SELECTOR
+	and r9w, di
+
+	test r9w, r9w
 	jz .first_group
 
-	cmp ax, GROUP_SELECTOR
+	cmp r9w, GROUP_SELECTOR
 	je .fourth_group
 
-	cmp ax, SECOND_GROUP
+	cmp r9w, SECOND_GROUP
 	je .second_group
 
-	cmp ax, THIRD_GROUP
+	cmp r9w, THIRD_GROUP
 	je .third_group
 
 	jmp after_instruction
@@ -65,7 +72,7 @@ check_steps:
 ;	jmp [rel jump + 16]
 
 .first_group:
-	mov al, dil
+;	jmp [rel instructions + al]
 
 .second_group:
 	mov ax, di
