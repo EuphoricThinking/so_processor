@@ -1,5 +1,5 @@
 global so_emul
-section .data
+section .rodata
 align 16
 jump: dq procedure1, procedure1, procedure2
 
