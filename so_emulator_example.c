@@ -1,9 +1,12 @@
 #include <stdio.h>
 
-void so_emul();
+int so_emul();
 
 int main() {
-	so_emul();
+	printf("before\n");
+	int res = so_emul();
+	printf("after\n");
+	printf("RES: %d\n", res);
 
 	return 0;
 }
