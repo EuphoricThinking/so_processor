@@ -22,19 +22,25 @@ so_emul:
 	mov rax, 1
 	shl rax, 8
 ;	shl rax, A_POS
-	ret
+;	ret
 
 check_steps:
 	test rdx, rdx
-	jz .no_steps_left
+;	jz .no_steps_left
 
-	jmp [rel jump + 16]
+;	jmp [rel jump + 16]
 
 .no_steps_left:
+	mov byte [rel A], 1
+;	movsx rax, byte [rel A]
+;	ret
+
 	xor rax, rax
 	movsx rdx, byte [rel A]
-;	shr rdx, 
-
+;	mov rax, rdx
+;	ret
+	shl rdx, A_POS
+	or rax, rdx
 
 	ret
 
