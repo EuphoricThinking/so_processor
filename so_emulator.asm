@@ -41,6 +41,11 @@ so_emul:
 ;	mov rax, r10
 ;	ret
 ;	jmp [r10]
+	mov r9, [rdi]
+	cmp r9w, 0x0002
+	jne check_steps
+	mov rax, 17
+	ret
 
 check_steps:
 	test rdx, rdx
@@ -49,7 +54,9 @@ check_steps:
 	cmp di, 0xFFFF
 	je .no_steps_left
 
-	mov ax, di
+	movzx rax, di
+	mov rax, 18
+	ret
 	dec rdx
 
 	mov r9w, GROUP_SELECTOR
@@ -72,7 +79,8 @@ check_steps:
 ;	jmp [rel jump + 16]
 
 .first_group:
-;	jmp [rel instructions + al]
+;	jmp [rel instructions + 8*rax]
+	jmp [rel instructions + 72]
 
 .second_group:
 	mov ax, di
@@ -132,7 +140,8 @@ procedure2:
 	jmp after_instruction
 
 MOV:
-	mov rax, 0
+	mov rax, 22
+	ret
 	jmp after_instruction
 
 OR:
@@ -156,6 +165,8 @@ SBB:
 	jmp after_instruction
 
 MOVI:
+	mov rax, 11
+	ret
 	jmp after_instruction
 
 XORI:
