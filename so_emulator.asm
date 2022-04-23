@@ -60,11 +60,22 @@ check_steps:
 	cmp ax, THIRD_GROUP
 	je .third_group
 
-	jmp check_steps
+	jmp after_instruction
 
 ;	jmp [rel jump + 16]
+
 .first_group:
 	mov al, dil
+
+.second_group:
+	mov ax, di
+
+.third_group:
+	mov ax, di
+
+.fourth_group:
+	mov ax, di
+
 
 .no_steps_left:
 ;	mov byte [rel C], 1
@@ -103,81 +114,81 @@ check_steps:
 
 after_instruction:
 	add di, 16
-	jmp check_steps
+	jmp after_instruction
 
 procedure1:
 	mov rax, 3
-	jmp check_steps
+	jmp after_instruction
 
 procedure2:
 	mov rax, 4
-	jmp check_steps
+	jmp after_instruction
 
 MOV:
 	mov rax, 0
-	jmp check_steps
+	jmp after_instruction
 
 OR:
 	mov rax, 2
-	jmp check_steps
+	jmp after_instruction
 
 ADD:
 	mov rax, 4
-	jmp check_steps
+	jmp after_instruction
 
 SUB:
 	mov rax, 5
-	jmp check_steps
+	jmp after_instruction
 
 ADC:
 	mov rax, 6
-	jmp check_steps
+	jmp after_instruction
 
 SBB:
 	mov rax, 7
-	jmp check_steps
+	jmp after_instruction
 
 MOVI:
-	jmp check_steps
+	jmp after_instruction
 
 XORI:
-	jmp check_steps
+	jmp after_instruction
 
 ADDI:
-	jmp check_steps
+	jmp after_instruction
 
 EMPT:
-	jmp check_steps
+	jmp after_instruction
 
 CMPI:
-	jmp check_steps
+	jmp after_instruction
 
 RCR:
-	jmp check_steps
+	jmp after_instruction
 
 CLC:
-	jmp check_steps
+	jmp after_instruction
 
 STC:
-	jmp check_steps
+	jmp after_instruction
 
 JMP:
-	jmp check_steps
+	jmp after_instruction
 
 JNC:
-	jmp check_steps
+	jmp after_instruction
 
 JC:
-	jmp check_steps
+	jmp after_instruction
 
 JNZ:
-	jmp check_steps
+	jmp after_instruction
 
 JZ:
-	jmp check_steps
+	jmp after_instruction
 
 BRK:
-	jmp check_steps
+	jmp after_instruction
 
 XCHG:
-	jmp check_steps
+	jmp after_instruction
