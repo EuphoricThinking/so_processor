@@ -51,6 +51,7 @@ so_emul:
 	lea r9, [rel testtab + 2]
 	mov r9b, byte[r9]
 	mov byte [rel testtab + 1], r9b
+	mov al, byte[rel testtab + 1]
 	ret
 ;	mov rax, 1
 ;	shl rax, 8
