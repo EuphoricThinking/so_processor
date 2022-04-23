@@ -14,9 +14,9 @@ SECOND_GROUP equ 0x4000
 THIRD_GROUP equ 0x8000
 
 CLEAR_LEFT_A1 equ 5
-CLEAR_RIGHT equ 13
+CLEAR_RIGHT_A1 equ 13
 
-CLEAR_LEFT_A2 equ 2
+CLEAR_RIGHT_A2 equ 11
 
 section .rodata
 align 16
@@ -42,8 +42,7 @@ section .text
 so_emul:
 	lea rcx, [rel instructions]
 	mov rax, 14336
-	shl rax, CLEAR_LEFT_A2
-	shr rax, CLEAR_RIGHT
+	shr rax, CLEAR_RIGHT_A2
 	ret
 check_steps:
 	test rdx, rdx
