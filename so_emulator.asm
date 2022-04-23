@@ -42,21 +42,19 @@ PC: resb 1
 C: resb 1
 Z: resb 1 	;SETcc instructions!
 
-testtab: resb 4
+;testtab: resb 4
 
 section .text
 
 so_emul:
 	lea rcx, [rel instructions]
-	lea r9, [rel testtab + 2]
-	mov r9b, byte[r9]
-	mov byte [rel testtab + 1], r9b
-	mov al, byte[rel testtab + 1]
-	ret
-;	mov rax, 1
-;	shl rax, 8
-;	shr rax, 8
+
+;	lea r9, [rel testtab + 2]
+;	mov r9b, byte[r9]
+;	mov byte [rel testtab + 1], r9b
+;	mov al, byte[rel testtab + 1]
 ;	ret
+
 check_steps:
 	test rdx, rdx
 	jz .no_steps_left
