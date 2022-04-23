@@ -3,7 +3,7 @@
 
 #define MEM_SIZE 256
 
-int so_emul(uint16_t* code, uint8_t* data, size_t steps);
+uint64_t so_emul(uint16_t* code, uint8_t* data, size_t steps);
 
 uint16_t code[MEM_SIZE] = {
   0x4000 + 0x100 * 2 + 1,           // MOVI X, 1
@@ -16,9 +16,9 @@ uint8_t data[MEM_SIZE];
 int main() {
 	size_t steps = 3;
 	printf("before\n");
-	int res = so_emul(code, data, steps);
+	uint64_t res = so_emul(code, data, steps);
 	printf("after\n");
-	printf("RES: %d\n", res);
+	printf("RES: %ld\n", res);
 
 	return 0;
 }

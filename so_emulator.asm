@@ -1,6 +1,6 @@
 global so_emul
 
-A_POS equ 55
+A_POS equ 56
 
 section .rodata
 align 16
@@ -20,7 +20,8 @@ section .text
 
 so_emul:
 	mov rax, 1
-	shr rax, A_POS
+	shl rax, 8
+;	shl rax, A_POS
 	ret
 
 check_steps:
