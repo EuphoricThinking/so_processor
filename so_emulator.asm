@@ -1,6 +1,13 @@
 global so_emul
 
 A_POS equ 56
+D_POS equ 48
+X_POS equ 40
+Y_POS equ 32
+PC_POS equ 24
+; 16 is empty
+C_POS equ 8
+Z_POS equ 0 ; nothing is needed
 
 section .rodata
 align 16
