@@ -53,6 +53,13 @@ check_steps:
 	jz .first_group
 
 	cmp ax, GROUP_SELECTOR
+	je .fourth_group
+
+	cmp ax, SECOND_GROUP
+	je .second_group
+
+	cmp ax, THIRD_GROUP
+	je .third_group
 
 	jmp check_steps
 
