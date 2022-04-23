@@ -46,6 +46,7 @@ so_emul:
 ;	jne check_steps
 ;	mov rax, 17
 ;	ret
+	lea rcx, [rel instructions]
 
 check_steps:
 	test rdx, rdx
@@ -56,8 +57,6 @@ check_steps:
 	je .no_steps_left
 
 	movzx rax, r10w ; a value to operate on
-;	mov rax, 18
-	ret
 	dec rdx
 
 	mov r9w, GROUP_SELECTOR  ; a selector to compare with a value from code
@@ -80,8 +79,11 @@ check_steps:
 ;	jmp [rel jump + 16]
 
 .first_group:
+;	lea r10, [rel instructions]
 ;	jmp [rel instructions + 8*rax]
-	jmp [rel instructions + 72]
+;	jmp [r10 + 8*rax]
+;	jmp [rel instructions + 72]
+	jmp [rcx + 8*rax]
 
 .second_group:
 	mov ax, di
@@ -146,7 +148,8 @@ MOV:
 	jmp after_instruction
 
 OR:
-	mov rax, 2
+	mov rax, 93
+	ret
 	jmp after_instruction
 
 ADD:
