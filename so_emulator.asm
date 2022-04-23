@@ -13,7 +13,9 @@ GROUP_SELECTOR equ 0xC000
 SECOND_GROUP equ 0x4000
 THIRD_GROUP equ 0x8000
 
+SECOND_GR_ADDR_CONST equ 1
 THIRD_GR_ADDR_CONST equ 10
+FOURTH_GR_ADDR_CONST equ 16
 
 CLEAR_LEFT_A1 equ 5
 CLEAR_RIGHT_AFTER_LEFT equ 13
@@ -98,7 +100,7 @@ check_steps:
 	shl rax, CLEAR_LEFT_A2
 	shr rax, CLEAR_RIGHT_AFTER_LEFT
 
-	jmp [rcx + 8*(rax + 1)]
+	jmp [rcx + 8*(rax + SECOND_GR_ADDR_CONST)]
 ;	mov r9w, al ; imm8
 
 .third_group:
@@ -109,8 +111,12 @@ check_steps:
 	jmp [rcx + THIRD_GR_ADDR_CONST + r9]
 
 .fourth_group:
-	mov ax, di
+	mov r9b, al  ; imm8
 
+	shl rax, CLEAR_LEFT_A1
+	shr rax, CLEAR_RIGHT_AFTER_LEFT
+
+	jmp [rcx + 8*(rax + FOURTH_GR_ADDR_CONST)]
 
 .no_steps_left:
 ;	mov byte [rel C], 1
