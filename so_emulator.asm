@@ -36,8 +36,8 @@ section .text
 
 so_emul:
 	lea rcx, [rel instructions]
-	mov rax, 1792
-	shr rax, 8
+	mov rax, 10240
+	shr rax, 11
 	ret
 check_steps:
 	test rdx, rdx
@@ -70,6 +70,12 @@ check_steps:
 ;	jmp [rel jump + 16]
 
 .first_group:
+	mov r10, rax ; arg1
+	shr r10, 8   ; divide by 0x100
+
+	mov r9, rax  ; arg2
+	shr r9, 11
+
 	jmp [rcx + 8*rax]
 
 .second_group:
