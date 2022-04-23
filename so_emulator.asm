@@ -1,4 +1,7 @@
 global so_emul
+
+A_POS equ 55
+
 section .rodata
 align 16
 jump: dq procedure1, procedure1, procedure2
@@ -16,37 +19,45 @@ Z: resb 1 	;SETcc instructions!
 section .text
 
 so_emul:
+	mov rax, 1
+	shr rax, A_POS
+	ret
 
-.check_steps:
+check_steps:
 	test rdx, rdx
 	jz .no_steps_left
 
 	jmp [rel jump + 16]
 
 .no_steps_left:
+	xor rax, rax
+	movsx rdx, A
+;	shr rdx, 
+
+
 	ret
 
 procedure1:
 	mov rax, 3
-	jmp .check_steps
+	jmp check_steps
 
 procedure2:
 	mov rax, 4
-	jmp .check_steps
+	jmp check_steps
 
 MOV:
 	mov rax, 0
-	jmp .check_steps
+	jmp check_steps
 
 OR:
 	mov rax, 2
-	jmp .check_steps
+	jmp check_steps
 
 ADD:
 	mov rax, 4
-	jmp .check_steps
+	jmp check_steps
 
 SUB:
 	mov rax, 5
-	jmp .check_steps
+	jmp check_steps
 
