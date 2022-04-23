@@ -146,3 +146,5 @@ JZ:
 BRK:
 	jmp check_steps
 
+XCHG:
+	jmp check_steps
