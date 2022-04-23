@@ -41,26 +41,27 @@ so_emul:
 ;	mov rax, r10
 ;	ret
 ;	jmp [r10]
-	mov r9, [rdi]
-	cmp r9w, 0x0002
-	jne check_steps
-	mov rax, 17
-	ret
+;	mov r9, [rdi]
+;	cmp r9w, 0x0002
+;	jne check_steps
+;	mov rax, 17
+;	ret
 
 check_steps:
 	test rdx, rdx
 	jz .no_steps_left
 
-	cmp di, 0xFFFF
+	mov r10, [rdi]   ; a value from code
+	cmp r10w, 0xFFFF
 	je .no_steps_left
 
-	movzx rax, di
-	mov rax, 18
+	movzx rax, r10w ; a value to operate on
+;	mov rax, 18
 	ret
 	dec rdx
 
-	mov r9w, GROUP_SELECTOR
-	and r9w, di
+	mov r9w, GROUP_SELECTOR  ; a selector to compare with a value from code
+	and r9w, r10w
 
 	test r9w, r9w
 	jz .first_group
