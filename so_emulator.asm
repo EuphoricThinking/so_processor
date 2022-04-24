@@ -67,7 +67,7 @@ check_steps:
 	test rdx, rdx
 	jz .no_steps_left
 
-	movzx r10, [rel state + PC_IND]
+	movzx r10, byte[rel state + PC_IND]
 	mov r10w, word[rdi + 2*r10]   ; a value from code
 
 	dec rdx
