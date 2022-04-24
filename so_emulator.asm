@@ -189,38 +189,6 @@ check_steps:
 	mov rax, [r11]
 	ret
 
-
-	xor rax, rax
-	movzx rdx, byte [rel state]
-
-	shl rdx, A_POS
-	or rax, rdx
-
-	movzx rdx, byte [rel state + D_IND]
-	shl rdx, D_POS
-	or rax, rdx
-
-	movzx rdx, byte [rel state + X_IND]
-	shl rdx, X_POS
-	or rax, rdx
-
-	movzx rdx, byte [rel state + Y_IND]
-	shl rdx, Y_POS
-	or rax, rdx
-
-	movzx rdx, byte [rel state + PC_IND]
-	shl rdx, PC_POS
-	or rax, rdx
-
-	movzx rdx, byte [rel state + C_IND]
-	shl rdx, C_POS
-	or rax, rdx
-
-	movzx rdx, byte [rel state + Z_IND]
-	or rax, rdx
-
-	ret
-
 procedure1:
 	mov rax, 3
 	jmp check_steps
