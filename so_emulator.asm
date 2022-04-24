@@ -59,7 +59,7 @@ section .text
 so_emul:
 	lea rcx, [rel instructions]
 	lea r11, [rel state]
-	push rbx
+;	push rbx
 
 ;	mov byte[rel testtab], 255
 ;	add byte[rel testtab], 7
@@ -86,6 +86,7 @@ check_steps:
 
 ;	lea r10, [rel state + PC_IND]
 ;	mov r10, [r10]
+
 	mov r10, [rel state + PC_IND]
 	mov r10, [rdi + 2*r10]   ; a value from code
 	cmp r10w, 0xFFFF
@@ -116,28 +117,48 @@ check_steps:
 ;	jmp [rel jump + 16]
 
 .first_group:
-	lea r10, [rel check_steps.first_group]
+	lea r10, [rel check_steps.first_r10]
+;	jmp r10
+;	ret
 	mov qword[rel cur_proc], r10
+	jmp [rel cur_proc]
 
 	mov r8, rax ; arg1      ; r10
 	shl r8, CLEAR_LEFT_A1   ; divide by 0x100
 	shr r8, CLEAR_RIGHT_AFTER_LEFT
 
-	mov r9, rax  ; arg2
-	shr r9, CLEAR_RIGHT_A2  ; nothing before
+	jmp .read_address_of_arg_val
+.first_r10:
+	mov rax, 54
+	ret
 
-.first_inner:
+	mov r10, r8  ; arg1
+
+	lea r9, [rel check_steps.first_r9]
+	mov qword[rel cur_proc], r10
+
+	mov r8, rax  ; arg2     ; r9
+	shr r8, CLEAR_RIGHT_A2  ; nothing before
+
+	jmp .read_address_of_arg_val
+
+.first_r9:
+	mov r9, [r8]   ; arg2
 
 	jmp [rcx + 8*rax]
 
 .second_group:
-;	lea r10, [rel check_steps.second_group]
-;	lea [rel cur_proc], [check_steps.first_group]
+	lea r10, [rel check_steps.second_r10]
+	mov qword[rel cur_proc], r10
 
-	mov r10, rax  ; arg1
-	shl r10, CLEAR_LEFT_A1
-	shr r10, CLEAR_RIGHT_AFTER_LEFT
+	mov r8, rax  ; arg1   ; r10
+	shl r8, CLEAR_LEFT_A1
+	shr r8, CLEAR_RIGHT_AFTER_LEFT
 
+	jmp .read_address_of_arg_val
+
+.second_r10:
+	mov r10, r8  ; arg1
 	mov r9b, al  ; imm8
 
 	shl rax, CLEAR_LEFT_A2
@@ -168,6 +189,7 @@ check_steps:
 	jnz .x_y_test
 
 	lea r8, [r11 + r8]
+;	ret
 	jmp [rel cur_proc]
 ;	jmp .after_test
 
@@ -230,7 +252,7 @@ check_steps:
 	movsx rdx, byte [rel state + Z_IND]
 	or rax, rdx
 
-	pop rbx
+;	pop rbx
 	ret
 
 after_instruction:
