@@ -126,8 +126,11 @@ check_steps:
 	mov qword[rel cur_proc], r10
 
 	mov r8, rax  ; arg1   ; r10
-	shl r8, CLEAR_LEFT_A1
-	shr r8, CLEAR_RIGHT_AFTER_LEFT
+	shl r8w, CLEAR_LEFT_A1
+
+	shr r8w, CLEAR_RIGHT_AFTER_LEFT
+	mov rax, r8
+	ret
 
 	jmp .read_address_of_arg_val
 
