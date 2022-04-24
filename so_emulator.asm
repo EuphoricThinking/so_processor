@@ -121,7 +121,7 @@ check_steps:
 ;	jmp r10
 ;	ret
 	mov qword[rel cur_proc], r10
-	jmp [rel cur_proc]
+;	jmp [rel cur_proc]
 
 	mov r8, rax ; arg1      ; r10
 	shl r8, CLEAR_LEFT_A1   ; divide by 0x100
@@ -129,12 +129,12 @@ check_steps:
 
 	jmp .read_address_of_arg_val
 .first_r10:
-	mov rax, 54
-	ret
+;	mov rax, 54
+;	ret
 
 	mov r10, r8  ; arg1
 
-	lea r9, [rel check_steps.first_r9]
+	lea r10, [rel check_steps.first_r9]
 	mov qword[rel cur_proc], r10
 
 	mov r8, rax  ; arg2     ; r9
