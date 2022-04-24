@@ -334,12 +334,26 @@ STC:
 	jmp check_steps
 
 JMP:
+	add byte[r11 + PC_IND], r9b
+
 	jmp check_steps
 
 JNC:
+	mov r8b, byte[r11 + C_IND]
+	test r8b, r8b
+	jnz check_steps
+
+	add byte[r11 + PC_IND], r9b
+
 	jmp check_steps
 
 JC:
+	mov r8b, byte[r11 + C_IND]
+	test r8b, r8b
+	jz check_steps
+
+	add byte[r11 + PC_IND], r9b
+
 	jmp check_steps
 
 JNZ:
