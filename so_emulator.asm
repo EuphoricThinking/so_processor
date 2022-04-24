@@ -1,5 +1,7 @@
 global so_emul
 
+%define modulo 0xF &
+
 ; position in rax
 A_POS equ 56
 D_POS equ 48
@@ -54,6 +56,8 @@ section .text
 so_emul:
 	lea rcx, [rel instructions]
 
+	mov rax, modulo 520
+	ret
 ;	and byte[rel testtab + 1], 8
 ;	ret
 
