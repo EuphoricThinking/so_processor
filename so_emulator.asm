@@ -324,9 +324,13 @@ RCR:
 	jmp check_steps
 
 CLC:
+	mov byte[r11 + C_IND], 0
+
 	jmp check_steps
 
 STC:
+	mov byte[r11 + C_IND], 1
+
 	jmp check_steps
 
 JMP:
