@@ -116,7 +116,7 @@ check_steps:
 ;	jmp [rel jump + 16]
 
 .first_group:
-	lea [rel cur_proc], [check_steps.first_group]
+	lea [rel cur_proc], check_steps.first_group
 
 	mov r10, rax ; arg1
 	shl r10, CLEAR_LEFT_A1   ; divide by 0x100
@@ -158,29 +158,36 @@ check_steps:
 	jmp [rcx + 8*(rax + FOURTH_GR_ADDR_CONST)]
 
 .read_address_of_arg_val:
-	test 4, r8
+	test r8, 4
 	jnz .x_y_test
 
 	lea r8, [r11 + r8]
-	jmp [cur_proc]
+;	jmp [cur_proc]
+	jmp .after_test
 
 .x_y_test:
-	test 2, r8
+	test r8, 2
 	jnz .x_y_plus
 
 	and r8, 1
-	mov r8, byte[r11 + 2 + r8]
+	movsx r8, byte[r11 + 2 + r8]
 	lea r8, [rsi + r8]
-	jmp [cur_proc]
+;	jmp [cur_proc]
+	jmp .after_test
 
 .x_y_plus:
 ;	add r8, [r11 + D_IND]
 
 	and r8, 1
 	mov r8, [r11 + 2 + r8]
-	add r8, byte[r11 + D_IND]
+	add r8, [r11 + D_IND]
 	lea r8, [rsi + r8]
-	jmp [cur_proc]
+;	jmp [cur_proc]
+
+.after_test:
+	test rax, 0xC000
+	jnz .first_inner
+	jz .second_inner
 
 .no_steps_left:
 ;	mov byte [rel C], 1
