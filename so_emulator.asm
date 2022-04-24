@@ -264,7 +264,20 @@ ADC:
 	jmp check_steps
 
 SBB:
-	mov rax, 7
+	test byte[r11 + C_IND], 1
+	jnz .set_cf_sbb
+
+	clc
+	jmp .after_set_sbb
+
+.set_cf_sbb:
+	stc
+
+.after_set_sbb:
+	sbb byte[r10], r9b
+	setc [r11 + C_IND]
+	setz [r11 + Z_IND]
+
 	jmp check_steps
 
 MOVI:
