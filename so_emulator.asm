@@ -119,9 +119,9 @@ check_steps:
 	lea r10, [rel check_steps.first_group]
 	mov qword[rel cur_proc], r10
 
-	mov r10, rax ; arg1
-	shl r10, CLEAR_LEFT_A1   ; divide by 0x100
-	shr r10, CLEAR_RIGHT_AFTER_LEFT
+	mov r8, rax ; arg1      ; r10
+	shl r8, CLEAR_LEFT_A1   ; divide by 0x100
+	shr r8, CLEAR_RIGHT_AFTER_LEFT
 
 	mov r9, rax  ; arg2
 	shr r9, CLEAR_RIGHT_A2  ; nothing before
@@ -168,8 +168,8 @@ check_steps:
 	jnz .x_y_test
 
 	lea r8, [r11 + r8]
-;	jmp [cur_proc]
-	jmp .after_test
+	jmp [rel cur_proc]
+;	jmp .after_test
 
 .x_y_test:
 	test r8, 2
@@ -178,8 +178,8 @@ check_steps:
 	and r8, 1
 	movsx r8, byte[r11 + 2 + r8]
 	lea r8, [rsi + r8]
-;	jmp [cur_proc]
-	jmp .after_test
+	jmp [rel cur_proc]
+;	jmp .after_test
 
 .x_y_plus:
 ;	add r8, [r11 + D_IND]
@@ -188,12 +188,12 @@ check_steps:
 	mov r8, [r11 + 2 + r8]
 	add r8, [r11 + D_IND]
 	lea r8, [rsi + r8]
-;	jmp [cur_proc]
+	jmp [rel cur_proc]
 
-.after_test:
-	test rax, 0xC000
-	jnz .first_inner
-	jz .second_inner
+;.after_test:
+;	test rax, 0xC000
+;	jnz .first_inner
+;	jz .second_inner
 
 .no_steps_left:
 ;	mov byte [rel C], 1
