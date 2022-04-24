@@ -138,6 +138,9 @@ check_steps:
 
 	mov r10, r8  ; arg1
 
+	movzx rax, byte[r10]
+	ret
+
 	lea r9, [rel check_steps.first_r9]
 	mov qword[rel cur_proc], r9
 
@@ -147,7 +150,10 @@ check_steps:
 	jmp .read_address_of_arg_val
 
 .first_r9:
-	mov r9, [r8]   ; arg2 - insert value, not address
+	mov r9b, byte[r8]   ; arg2 - insert value, not address
+
+;	movzx rax, r9b
+;	ret
 
 	jmp [rcx + 8*rax]
 
@@ -191,8 +197,8 @@ check_steps:
 	test r8b, 4
 	jnz .x_y_test
 
-	movzx rax, byte[r11]
-	ret
+;	movzx rax, byte[r11]
+;	ret
 
 	lea r8, [r11 + r8]
 ;	ret
