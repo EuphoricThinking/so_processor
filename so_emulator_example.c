@@ -14,7 +14,7 @@ uint16_t code[MEM_SIZE] = {
 uint8_t data[MEM_SIZE];
 
 int main() {
-	size_t steps = 3;
+	size_t steps = 1;
 	printf("before\n");
 	uint64_t res = so_emul(code, data, steps);
 	printf("after\n");

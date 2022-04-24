@@ -100,8 +100,8 @@ check_steps:
 	mov qword[rel cur_proc], r10
 
 	mov r8, rax ; arg1      ; r10
-	shl r8, CLEAR_LEFT_A1   ; clear arg2 from left bits
-	shr r8, CLEAR_RIGHT_AFTER_LEFT
+	shl r8w, CLEAR_LEFT_A1   ; clear arg2 from left bits
+	shr r8w, CLEAR_RIGHT_AFTER_LEFT
 
 	jmp .read_address_of_arg_val
 
@@ -112,7 +112,7 @@ check_steps:
 	mov qword[rel cur_proc], r9
 
 	mov r8, rax  ; arg2     ; r9
-	shr r8, CLEAR_RIGHT_A2  ; nothing before
+	shr r8w, CLEAR_RIGHT_A2  ; nothing before
 
 	jmp .read_address_of_arg_val
 
@@ -129,8 +129,6 @@ check_steps:
 	shl r8w, CLEAR_LEFT_A1
 
 	shr r8w, CLEAR_RIGHT_AFTER_LEFT
-	mov rax, r8
-	ret
 
 	jmp .read_address_of_arg_val
 
@@ -139,8 +137,8 @@ check_steps:
 
 	mov r9b, al  ; imm8, value
 
-	shl rax, CLEAR_LEFT_A2
-	shr rax, CLEAR_RIGHT_AFTER_LEFT
+	shl ax, CLEAR_LEFT_A2
+	shr ax, CLEAR_RIGHT_AFTER_LEFT
 
 	jmp [rcx + 8*(rax + SECOND_GR_ADDR_CONST)]
 
@@ -154,8 +152,8 @@ check_steps:
 .fourth_group:
 	mov r9b, al  ; imm8
 
-	shl rax, CLEAR_LEFT_A1
-	shr rax, CLEAR_RIGHT_AFTER_LEFT
+	shl ax, CLEAR_LEFT_A1
+	shr ax, CLEAR_RIGHT_AFTER_LEFT
 
 	jmp [rcx + 8*(rax + FOURTH_GR_ADDR_CONST)]
 
