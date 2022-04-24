@@ -166,12 +166,7 @@ check_steps:
 
 .x_y_test:
 	test 2, r8
-;	mov r8, byte[r11 + 2 + last_bit r8b]
 	jnz .x_y_plus
-	; value under x or y
-;	mov r8, byte[r11 + 2 + (r8&1)]
-;	mov r8, byte[r11 + 2 + r8]
-;	lea r8, [rsi + r8]
 
 	and r8, 1
 	mov r8, byte[r11 + 2 + r8]
@@ -184,7 +179,7 @@ check_steps:
 	and r8, 1
 	mov r8, [r11 + 2 + r8]
 	add r8, byte[r11 + D_IND]
-	lea
+	lea r8, [rsi + r8]
 	jmp [cur_proc]
 
 .no_steps_left:
