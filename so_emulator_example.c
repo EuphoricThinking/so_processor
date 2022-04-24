@@ -19,10 +19,10 @@ typedef struct __attribute__((packed)) {
 cpu_state_t so_emul(uint16_t* code, uint8_t* data, size_t steps, size_t cores);
 
 uint16_t code_mov[MEM_SIZE] = {
-  0x4000 + 0x100 * 0 + 1,           // MOVI A, 1
-  0x4000 + 0x100 * 1 + 3,           // MOVI D, 3
-  0x4000 + 0x100 * 2 + 0x11,        // MOVI X, 0x11
-  0x4000 + 0x100 * 3 + 0x21,        // MOVI Y, 0x21
+//  0x4000 + 0x100 * 0 + 1,           // MOVI A, 1
+//  0x4000 + 0x100 * 1 + 3,           // MOVI D, 3
+//  0x4000 + 0x100 * 2 + 0x11,        // MOVI X, 0x11
+//  0x4000 + 0x100 * 3 + 0x21,        // MOVI Y, 0x21
   0x0000 + 0x100 * 4 + 0x0800 * 0,  // MOV  [X], A
   0x0000 + 0x100 * 5 + 0x0800 * 1,  // MOV  [Y], D
   0x4000 + 0x100 * 6 + 0x07,        // MOVI [X + D], 0x07
@@ -49,7 +49,10 @@ int main() {
 //	cpu_state_t res = so_emul(code, data, steps);
 //	printf("after\n");
 //	printf("RES: %ld\n", res);
-	dump_cpu_state(0, so_emul(code_mov, data, 4, 0), data);
+//	dump_cpu_state(0, so_emul(code_mov, data, 4, 0), data);
+//	printf("seven\n");
+	dump_cpu_state(0, so_emul(code_mov, data, 7, 0), data);
+//  dump_memory(data);
 
 	return 0;
 }
