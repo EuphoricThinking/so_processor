@@ -62,33 +62,10 @@ section .text
 so_emul:
 	lea rcx, [rel instructions]
 	lea r11, [rel state]
-;	push rbx
-
-;	mov byte[rel testtab], 255
-;	add byte[rel testtab], 7
-;	mov rax, [rel testtab ]
-;	ret
-
-;	inc byte[rel testtab + 2]
-;	mov al, byte[rel testtab]
-;	ret
-;	and byte[rel testtab + 1], 8
-;	ret
-
-;	lea r9, [rel testtab + 2]
-;	mov r9b, byte[r9]
-;	mov byte [rel testtab + 1], r9b
-;	mov al, byte[rel testtab + 1]
-;	ret
 
 check_steps:
-;	jmp .no_steps_left
-
 	test rdx, rdx
 	jz .no_steps_left
-
-;	lea r10, [rel state + PC_IND]
-;	mov r10, [r10]
 
 	mov r10, [rel state + PC_IND]
 	mov r10, [rdi + 2*r10]   ; a value from code
@@ -117,14 +94,9 @@ check_steps:
 
 	jmp check_steps
 
-;	jmp [rel jump + 16]
-
 .first_group:
 	lea r10, [rel check_steps.first_r10]
-;	jmp r10
-;	ret
 	mov qword[rel cur_proc], r10
-;	jmp [rel cur_proc]
 
 	mov r8, rax ; arg1      ; r10
 	shl r8, CLEAR_LEFT_A1   ; clear arg2 from left bits
@@ -133,13 +105,7 @@ check_steps:
 	jmp .read_address_of_arg_val
 
 .first_r10:
-;	mov rax, 54
-;	ret
-
 	mov r10, r8  ; arg1, address
-
-;	movzx rax, byte[r10]
-;	ret
 
 	lea r9, [rel check_steps.first_r9]
 	mov qword[rel cur_proc], r9
@@ -151,9 +117,6 @@ check_steps:
 
 .first_r9:
 	mov r9b, byte[r8]   ; arg2 - insert value, not address
-
-;	movzx rax, r9b
-;	ret
 
 	jmp [rcx + 8*rax]
 
@@ -176,7 +139,6 @@ check_steps:
 	shr rax, CLEAR_RIGHT_AFTER_LEFT
 
 	jmp [rcx + 8*(rax + SECOND_GR_ADDR_CONST)]
-;	mov r9w, al ; imm8
 
 .third_group:
 	mov r9, rax
@@ -197,13 +159,8 @@ check_steps:
 	test r8b, 4
 	jnz .x_y_test
 
-;	movzx rax, byte[r11]
-;	ret
-
 	lea r8, [r11 + r8]
-;	ret
 	jmp [rel cur_proc]
-;	jmp .after_test
 
 .x_y_test:
 	test r8, 2
@@ -213,10 +170,8 @@ check_steps:
 	movzx r8, byte[r11 + 2 + r8] ; it's uint8_t, unsigned
 	lea r8, [rsi + r8]
 	jmp [rel cur_proc]
-;	jmp .after_test
 
 .x_y_plus:
-;	add r8, [r11 + D_IND]
 
 	and r8, 1
 	movzx r8, byte[r11 + 2 + r8]
@@ -224,15 +179,7 @@ check_steps:
 	lea r8, [rsi + r8]
 	jmp [rel cur_proc]
 
-;.after_test:
-;	test rax, 0xC000
-;	jnz .first_inner
-;	jz .second_inner
-
 .no_steps_left:
-;	mov byte [rel C], 1
-;	mov byte [rel Z], 1
-
 ;	mov byte [rel state + C_IND], 1
 ;	mov byte [rel state + Z_IND], 1
 
@@ -265,12 +212,7 @@ check_steps:
 	movsx rdx, byte [rel state + Z_IND]
 	or rax, rdx
 
-;	pop rbx
 	ret
-
-;after_instruction:
-;	add rdi, 16
-;	jmp check_steps
 
 procedure1:
 	mov rax, 3
