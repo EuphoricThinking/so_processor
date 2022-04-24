@@ -150,7 +150,7 @@ check_steps:
 	shr r9, 8
 	and r9, 1
 
-	jmp [rcx + THIRD_GR_ADDR_CONST + r9]
+	jmp [rcx + 8*(THIRD_GR_ADDR_CONST + r9)]
 
 .fourth_group:
 	mov r9b, al  ; imm8
