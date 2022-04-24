@@ -308,6 +308,18 @@ CMPI:
 	jmp check_steps
 
 RCR:
+	test byte[r11 + C_IND], 1
+	jnz .set_cf_rcr
+
+	clc
+	jmp .after_set_rcr
+
+.set_cf_rcr:
+	stc
+
+.after_set_rcr:
+	rcr byte[r10], 1
+	setc byte[r11 + C_IND]
 
 	jmp check_steps
 
