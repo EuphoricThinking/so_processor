@@ -56,8 +56,14 @@ section .text
 so_emul:
 	lea rcx, [rel instructions]
 
-	mov rax, modulo 520
-	ret
+;	mov byte[rel testtab], 255
+;	add byte[rel testtab], 7
+;	mov rax, [rel testtab ]
+;	ret
+
+;	inc byte[rel testtab + 2]
+;	mov al, byte[rel testtab]
+;	ret
 ;	and byte[rel testtab + 1], 8
 ;	ret
 
@@ -68,17 +74,24 @@ so_emul:
 ;	ret
 
 check_steps:
-	jmp .no_steps_left
+;	jmp .no_steps_left
 
 	test rdx, rdx
 	jz .no_steps_left
 
-	lea r10, [rel state + PC_IND]
+;	lea r10, [rel state + PC_IND]
+;	mov r10, [r10]
+	mov r10, [rel state + PC_IND]
 	mov r10, [rdi + r10]   ; a value from code
 	cmp r10w, 0xFFFF
 	je .no_steps_left
 
 	dec rdx
+;	mov byte[rel state + PC_IND], 255
+;	add byte[rel state + PC_IND], 7
+	inc byte [rel state + PC_IND]
+	mov al, byte[rel state + PC_IND]
+
 
 	movzx rax, r10w ; a value to operate on
 
