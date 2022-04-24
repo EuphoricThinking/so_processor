@@ -228,8 +228,9 @@ MOV:
 	jmp check_steps
 
 OR:
-	mov rax, 93
-	ret
+	or byte[r10], r9b
+	setz byte[r11 + Z_IND]
+
 	jmp check_steps
 
 ADD:
