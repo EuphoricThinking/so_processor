@@ -69,11 +69,12 @@ check_steps:
 
 	mov r10, [rel state + PC_IND]
 	mov r10, [rdi + 2*r10]   ; a value from code
-	cmp r10w, 0xFFFF
-	je .no_steps_left
 
 	dec rdx
 	inc byte [rel state + PC_IND]
+
+	cmp r10w, 0xFFFF
+    je .no_steps_left
 
 	movzx rax, r10w ; a value to operate on
 
@@ -234,15 +235,19 @@ OR:
 	jmp check_steps
 
 ADD:
-	mov rax, 4
+	add byte[r10], r9b
+	setz byte[r11 + Z_IND]
+
 	jmp check_steps
 
 SUB:
-	mov rax, 5
+	sub byte[r10], r9b
+	setz byte[r11 + Z_IND]
+
 	jmp check_steps
 
 ADC:
-	mov rax, 6
+	add
 	jmp check_steps
 
 SBB:
