@@ -2,6 +2,8 @@ global so_emul
 
 %define modulo 0xF &
 
+%define last_bit 1 &
+
 ; position in rax
 A_POS equ 56
 D_POS equ 48
@@ -57,6 +59,7 @@ section .text
 so_emul:
 	lea rcx, [rel instructions]
 	lea r11, [rel state]
+	push rbx
 
 ;	mov byte[rel testtab], 255
 ;	add byte[rel testtab], 7
@@ -163,15 +166,25 @@ check_steps:
 
 .x_y_test:
 	test 2, r8
-	mov r8, byte[r11 + 2 + (r8&1)]
+;	mov r8, byte[r11 + 2 + last_bit r8b]
 	jnz .x_y_plus
-
+	; value under x or y
 ;	mov r8, byte[r11 + 2 + (r8&1)]
+;	mov r8, byte[r11 + 2 + r8]
+;	lea r8, [rsi + r8]
+
+	and r8, 1
+	mov r8, byte[r11 + 2 + r8]
 	lea r8, [rsi + r8]
 	jmp [cur_proc]
 
 .x_y_plus:
-	add r8, [r11 + D_IND]
+;	add r8, [r11 + D_IND]
+
+	and r8, 1
+	mov r8, [r11 + 2 + r8]
+	add r8, byte[r11 + D_IND]
+	lea
 	jmp [cur_proc]
 
 .no_steps_left:
@@ -209,6 +222,7 @@ check_steps:
 	movsx rdx, byte [rel state + Z_IND]
 	or rax, rdx
 
+	pop rbx
 	ret
 
 after_instruction:
