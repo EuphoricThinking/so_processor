@@ -52,7 +52,10 @@ state: resb 7
 					;SETcc instructions!
 
 testtab: resb 4
-cur_proc: resq 1
+;cur_proc: resq 1
+
+section .data
+cur_proc: dq 1
 
 section .text
 
@@ -187,6 +190,9 @@ check_steps:
 .read_address_of_arg_val:
 	test r8b, 4
 	jnz .x_y_test
+
+	movzx rax, byte[r11]
+	ret
 
 	lea r8, [r11 + r8]
 ;	ret
