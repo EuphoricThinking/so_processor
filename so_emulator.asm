@@ -50,11 +50,13 @@ state: resb 7
 					;SETcc instructions!
 
 testtab: resb 4
+cur_proc: resq 1
 
 section .text
 
 so_emul:
 	lea rcx, [rel instructions]
+	lea r11, [rel state]
 
 ;	mov byte[rel testtab], 255
 ;	add byte[rel testtab], 7
@@ -82,16 +84,12 @@ check_steps:
 ;	lea r10, [rel state + PC_IND]
 ;	mov r10, [r10]
 	mov r10, [rel state + PC_IND]
-	mov r10, [rdi + r10]   ; a value from code
+	mov r10, [rdi + 2*r10]   ; a value from code
 	cmp r10w, 0xFFFF
 	je .no_steps_left
 
 	dec rdx
-;	mov byte[rel state + PC_IND], 255
-;	add byte[rel state + PC_IND], 7
 	inc byte [rel state + PC_IND]
-	mov al, byte[rel state + PC_IND]
-
 
 	movzx rax, r10w ; a value to operate on
 
@@ -115,6 +113,8 @@ check_steps:
 ;	jmp [rel jump + 16]
 
 .first_group:
+	lea [rel cur_proc], [check_steps.first_group]
+
 	mov r10, rax ; arg1
 	shl r10, CLEAR_LEFT_A1   ; divide by 0x100
 	shr r10, CLEAR_RIGHT_AFTER_LEFT
@@ -125,6 +125,8 @@ check_steps:
 	jmp [rcx + 8*rax]
 
 .second_group:
+	lea [rel cur_proc], [check_steps.first_group]
+
 	mov r10, rax  ; arg1
 	shl r10, CLEAR_LEFT_A1
 	shr r10, CLEAR_RIGHT_AFTER_LEFT
@@ -151,6 +153,26 @@ check_steps:
 	shr rax, CLEAR_RIGHT_AFTER_LEFT
 
 	jmp [rcx + 8*(rax + FOURTH_GR_ADDR_CONST)]
+
+.read_address_of_arg_val:
+	test 4, r8
+	jnz .x_y_test
+
+	lea r8, [r11 + r8]
+	jmp [cur_proc]
+
+.x_y_test:
+	test 2, r8
+	mov r8, byte[r11 + 2 + (r8&1)]
+	jnz .x_y_plus
+
+;	mov r8, byte[r11 + 2 + (r8&1)]
+	lea r8, [rsi + r8]
+	jmp [cur_proc]
+
+.x_y_plus:
+	add r8, [r11 + D_IND]
+	jmp [cur_proc]
 
 .no_steps_left:
 ;	mov byte [rel C], 1
