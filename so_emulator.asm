@@ -112,7 +112,7 @@ check_steps:
 	cmp r9w, THIRD_GROUP
 	je .third_group
 
-	jmp after_instruction
+	jmp check_steps
 
 ;	jmp [rel jump + 16]
 
@@ -124,18 +124,19 @@ check_steps:
 ;	jmp [rel cur_proc]
 
 	mov r8, rax ; arg1      ; r10
-	shl r8, CLEAR_LEFT_A1   ; divide by 0x100
+	shl r8, CLEAR_LEFT_A1   ; clear arg2 from left bits
 	shr r8, CLEAR_RIGHT_AFTER_LEFT
 
 	jmp .read_address_of_arg_val
+
 .first_r10:
 ;	mov rax, 54
 ;	ret
 
 	mov r10, r8  ; arg1
 
-	lea r10, [rel check_steps.first_r9]
-	mov qword[rel cur_proc], r10
+	lea r9, [rel check_steps.first_r9]
+	mov qword[rel cur_proc], r9
 
 	mov r8, rax  ; arg2     ; r9
 	shr r8, CLEAR_RIGHT_A2  ; nothing before
@@ -143,7 +144,7 @@ check_steps:
 	jmp .read_address_of_arg_val
 
 .first_r9:
-	mov r9, [r8]   ; arg2
+	mov r9, [r8]   ; arg2 - insert value, not address
 
 	jmp [rcx + 8*rax]
 
@@ -159,12 +160,11 @@ check_steps:
 
 .second_r10:
 	mov r10, r8  ; arg1
+
 	mov r9b, al  ; imm8
 
 	shl rax, CLEAR_LEFT_A2
 	shr rax, CLEAR_RIGHT_AFTER_LEFT
-
-.second_inner:
 
 	jmp [rcx + 8*(rax + SECOND_GR_ADDR_CONST)]
 ;	mov r9w, al ; imm8
@@ -185,7 +185,7 @@ check_steps:
 	jmp [rcx + 8*(rax + FOURTH_GR_ADDR_CONST)]
 
 .read_address_of_arg_val:
-	test r8, 4
+	test r8b, 4
 	jnz .x_y_test
 
 	lea r8, [r11 + r8]
@@ -198,7 +198,7 @@ check_steps:
 	jnz .x_y_plus
 
 	and r8, 1
-	movsx r8, byte[r11 + 2 + r8]
+	movzx r8, byte[r11 + 2 + r8] ; it's uint8_t, unsigned
 	lea r8, [rsi + r8]
 	jmp [rel cur_proc]
 ;	jmp .after_test
@@ -207,7 +207,7 @@ check_steps:
 ;	add r8, [r11 + D_IND]
 
 	and r8, 1
-	mov r8, [r11 + 2 + r8]
+	movzx r8, byte[r11 + 2 + r8]
 	add r8, [r11 + D_IND]
 	lea r8, [rsi + r8]
 	jmp [rel cur_proc]
@@ -220,11 +220,12 @@ check_steps:
 .no_steps_left:
 ;	mov byte [rel C], 1
 ;	mov byte [rel Z], 1
-	mov byte [rel state + C_IND], 1
-	mov byte [rel state + Z_IND], 1
+
+;	mov byte [rel state + C_IND], 1
+;	mov byte [rel state + Z_IND], 1
 
 	xor rax, rax
-	movsx rdx, byte [rel state]
+	movzx rdx, byte [rel state]
 
 	shl rdx, A_POS
 	or rax, rdx
@@ -255,87 +256,87 @@ check_steps:
 ;	pop rbx
 	ret
 
-after_instruction:
-	add rdi, 16
-	jmp check_steps
+;after_instruction:
+;	add rdi, 16
+;	jmp check_steps
 
 procedure1:
 	mov rax, 3
-	jmp after_instruction
+	jmp check_steps
 
 procedure2:
 	mov rax, 4
-	jmp after_instruction
+	jmp check_steps
 
 MOV:
 	mov rax, 22
 	ret
-	jmp after_instruction
+	jmp check_steps
 
 OR:
 	mov rax, 93
 	ret
-	jmp after_instruction
+	jmp check_steps
 
 ADD:
 	mov rax, 4
-	jmp after_instruction
+	jmp check_steps
 
 SUB:
 	mov rax, 5
-	jmp after_instruction
+	jmp check_steps
 
 ADC:
 	mov rax, 6
-	jmp after_instruction
+	jmp check_steps
 
 SBB:
 	mov rax, 7
-	jmp after_instruction
+	jmp check_steps
 
 MOVI:
 	mov rax, 11
 	ret
-	jmp after_instruction
+	jmp check_steps
 
 XORI:
-	jmp after_instruction
+	jmp check_steps
 
 ADDI:
-	jmp after_instruction
+	jmp check_steps
 
 EMPT:
-	jmp after_instruction
+	jmp check_steps
 
 CMPI:
-	jmp after_instruction
+	jmp check_steps
 
 RCR:
-	jmp after_instruction
+	jmp check_steps
 
 CLC:
-	jmp after_instruction
+	jmp check_steps
 
 STC:
-	jmp after_instruction
+	jmp check_steps
 
 JMP:
-	jmp after_instruction
+	jmp check_steps
 
 JNC:
-	jmp after_instruction
+	jmp check_steps
 
 JC:
-	jmp after_instruction
+	jmp check_steps
 
 JNZ:
-	jmp after_instruction
+	jmp check_steps
 
 JZ:
-	jmp after_instruction
+	jmp check_steps
 
 BRK:
-	jmp after_instruction
+	jmp check_steps
 
 XCHG:
-	jmp after_instruction
+	jmp check_steps
