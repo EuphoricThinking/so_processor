@@ -224,6 +224,7 @@ procedure2:
 
 MOV:
 	mov byte[r10], r9b
+
 	jmp check_steps
 
 OR:
