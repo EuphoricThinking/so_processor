@@ -74,7 +74,7 @@ check_steps:
 	inc byte [rel state + PC_IND]
 
 	cmp r10w, 0xFFFF
-    je .no_steps_left
+	je .no_steps_left
 
 	movzx rax, r10w ; a value to operate on
 
@@ -247,7 +247,20 @@ SUB:
 	jmp check_steps
 
 ADC:
-	add
+	test byte[r11 + C_IND], 1
+	jnz .set_cf_adc
+
+	clc
+	jmp .after_set_adc
+
+.set_cf_adc:
+	stc
+
+.after_set_adc:
+	adc byte[r10], r9b
+	setc [r11 + C_IND]
+	setz [r11 + Z_IND]
+
 	jmp check_steps
 
 SBB:
