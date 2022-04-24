@@ -22,7 +22,7 @@ Y_IND equ 3
 PC_IND equ 4
 
 C_IND equ 6  ; previous 5
-Z_IND equ 8  ; previous 7
+Z_IND equ 7  ; previous 7
 
 GROUP_SELECTOR equ 0xC000
 SECOND_GROUP equ 0x4000
@@ -49,7 +49,7 @@ instructions: dq MOV, EMPT, OR, EMPT, ADD, SUB, ADC, SBB, XCHG, \
 
 section .bss
 align 8		; A D X Y PC C Z
-state: resb 7
+state: resb 8
 					;SETcc instructions!
 
 testtab: resb 4
