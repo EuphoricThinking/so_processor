@@ -20,8 +20,9 @@ D_IND equ 1
 X_IND equ 2
 Y_IND equ 3
 PC_IND equ 4
-C_IND equ 5
-Z_IND equ 7
+
+C_IND equ 6  ; previous 5
+Z_IND equ 8  ; previous 7
 
 GROUP_SELECTOR equ 0xC000
 SECOND_GROUP equ 0x4000
@@ -183,6 +184,9 @@ check_steps:
 .no_steps_left:
 ;	mov byte [rel state + C_IND], 1
 ;	mov byte [rel state + Z_IND], 1
+	mov rax, [r11]
+	ret
+
 
 	xor rax, rax
 	movzx rdx, byte [rel state]
