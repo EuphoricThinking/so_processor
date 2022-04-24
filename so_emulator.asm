@@ -67,8 +67,8 @@ check_steps:
 	test rdx, rdx
 	jz .no_steps_left
 
-	mov r10, [rel state + PC_IND]
-	mov r10, [rdi + 2*r10]   ; a value from code
+	movzx r10, [rel state + PC_IND]
+	mov r10w, word[rdi + 2*r10]   ; a value from code
 
 	dec rdx
 	inc byte [rel state + PC_IND]
@@ -173,7 +173,6 @@ check_steps:
 	jmp [rel cur_proc]
 
 .x_y_plus:
-
 	and r8, 1
 	movzx r8, byte[r11 + 2 + r8]
 	add r8, [r11 + D_IND]
@@ -190,27 +189,27 @@ check_steps:
 	shl rdx, A_POS
 	or rax, rdx
 
-	movsx rdx, byte [rel state + D_IND]
+	movzx rdx, byte [rel state + D_IND]
 	shl rdx, D_POS
 	or rax, rdx
 
-	movsx rdx, byte [rel state + X_IND]
+	movzx rdx, byte [rel state + X_IND]
 	shl rdx, X_POS
 	or rax, rdx
 
-	movsx rdx, byte [rel state + Y_IND]
+	movzx rdx, byte [rel state + Y_IND]
 	shl rdx, Y_POS
 	or rax, rdx
 
-	movsx rdx, byte [rel state + PC_IND]
+	movzx rdx, byte [rel state + PC_IND]
 	shl rdx, PC_POS
 	or rax, rdx
 
-	movsx rdx, byte [rel state + C_IND]
+	movzx rdx, byte [rel state + C_IND]
 	shl rdx, C_POS
 	or rax, rdx
 
-	movsx rdx, byte [rel state + Z_IND]
+	movzx rdx, byte [rel state + Z_IND]
 	or rax, rdx
 
 	ret
