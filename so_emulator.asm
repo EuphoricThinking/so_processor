@@ -1,5 +1,6 @@
 global so_emul
 
+; position in rax
 A_POS equ 56
 D_POS equ 48
 X_POS equ 40
@@ -8,6 +9,15 @@ PC_POS equ 24
 ; 16 is empty
 C_POS equ 8
 Z_POS equ 0 ; nothing is needed
+
+; index in state table
+A_IND equ 0
+D_IND equ 1
+X_IND equ 2
+Y_IND equ 3
+PC_IND equ 4
+C_IND equ 5
+Z_IND equ 7
 
 GROUP_SELECTOR equ 0xC000
 SECOND_GROUP equ 0x4000
@@ -33,14 +43,9 @@ instructions: dq MOV, EMPT, OR, EMPT, ADD, SUB, ADC, SBB, XCHG, \
 		 EMPT, JNC, JC, JNZ, JZ
 
 section .bss
-align 8
-A: resb 1
-D: resb 1
-X: resb 1
-Y: resb 1
-PC: resb 1
-C: resb 1
-Z: resb 1 	;SETcc instructions!
+align 8		; A D X Y PC C Z
+state: resb 7
+					;SETcc instructions!
 
 testtab: resb 4
 
@@ -49,8 +54,9 @@ section .text
 so_emul:
 	lea rcx, [rel instructions]
 
-	and byte[rel testtab + 1], 8
-	ret
+;	and byte[rel testtab + 1], 8
+;	ret
+
 ;	lea r9, [rel testtab + 2]
 ;	mov r9b, byte[r9]
 ;	mov byte [rel testtab + 1], r9b
@@ -58,6 +64,8 @@ so_emul:
 ;	ret
 
 check_steps:
+	jmp .no_steps_left
+
 	test rdx, rdx
 	jz .no_steps_left
 
@@ -128,34 +136,36 @@ check_steps:
 .no_steps_left:
 ;	mov byte [rel C], 1
 ;	mov byte [rel Z], 1
+	mov byte [rel state + C_IND], 1
+	mov byte [rel state + Z_IND], 1
 
 	xor rax, rax
-	movsx rdx, byte [rel A]
+	movsx rdx, byte [rel state]
 
 	shl rdx, A_POS
 	or rax, rdx
 
-	movsx rdx, byte [rel D]
+	movsx rdx, byte [rel state + D_IND]
 	shl rdx, D_POS
 	or rax, rdx
 
-	movsx rdx, byte [rel X]
+	movsx rdx, byte [rel state + X_IND]
 	shl rdx, X_POS
 	or rax, rdx
 
-	movsx rdx, byte [rel Y]
+	movsx rdx, byte [rel state + Y_IND]
 	shl rdx, Y_POS
 	or rax, rdx
 
-	movsx rdx, byte [rel PC]
+	movsx rdx, byte [rel state + PC_IND]
 	shl rdx, PC_POS
 	or rax, rdx
 
-	movsx rdx, byte [rel C]
+	movsx rdx, byte [rel state + C_IND]
 	shl rdx, C_POS
 	or rax, rdx
 
-	movsx rdx, byte [rel Z]
+	movsx rdx, byte [rel state + Z_IND]
 	or rax, rdx
 
 	ret
