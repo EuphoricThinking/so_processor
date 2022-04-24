@@ -258,8 +258,8 @@ ADC:
 
 .after_set_adc:
 	adc byte[r10], r9b
-	setc [r11 + C_IND]
-	setz [r11 + Z_IND]
+	setc byte[r11 + C_IND]
+	setz byte[r11 + Z_IND]
 
 	jmp check_steps
 
@@ -275,29 +275,40 @@ SBB:
 
 .after_set_sbb:
 	sbb byte[r10], r9b
-	setc [r11 + C_IND]
-	setz [r11 + Z_IND]
+	setc byte[r11 + C_IND]
+	setz byte[r11 + Z_IND]
 
 	jmp check_steps
 
 MOVI:
-	mov rax, 11
-	ret
+	mov byte[r10], r9b
+
 	jmp check_steps
 
 XORI:
+	xor byte[r10], r9b
+	setz byte[r11 + Z_IND]
+
 	jmp check_steps
 
 ADDI:
+	add byte[r10], r9b
+	setz byte[r11 + Z_IND]
+
 	jmp check_steps
 
 EMPT:
 	jmp check_steps
 
 CMPI:
+	cmp byte[r10], r9b
+	setc byte[r11 + Z_IND]
+	setz byte[r11 + C_IND]
+
 	jmp check_steps
 
 RCR:
+
 	jmp check_steps
 
 CLC:
