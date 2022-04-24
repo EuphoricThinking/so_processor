@@ -223,8 +223,7 @@ procedure2:
 	jmp check_steps
 
 MOV:
-	mov rax, 22
-	ret
+	mov byte[r10], r9b
 	jmp check_steps
 
 OR:
