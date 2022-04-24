@@ -136,10 +136,10 @@ check_steps:
 ;	mov rax, 54
 ;	ret
 
-	mov r10, r8  ; arg1
+	mov r10, r8  ; arg1, address
 
-	movzx rax, byte[r10]
-	ret
+;	movzx rax, byte[r10]
+;	ret
 
 	lea r9, [rel check_steps.first_r9]
 	mov qword[rel cur_proc], r9
@@ -168,9 +168,9 @@ check_steps:
 	jmp .read_address_of_arg_val
 
 .second_r10:
-	mov r10, r8  ; arg1
+	mov r10, r8  ; arg1, address
 
-	mov r9b, al  ; imm8
+	mov r9b, al  ; imm8, value
 
 	shl rax, CLEAR_LEFT_A2
 	shr rax, CLEAR_RIGHT_AFTER_LEFT
