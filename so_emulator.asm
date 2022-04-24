@@ -357,9 +357,21 @@ JC:
 	jmp check_steps
 
 JNZ:
+	mov r8b, byte[r11 + Z_IND]
+	test r8b, r8b
+	jnz check_steps
+
+	add byte[r11 + PC_IND], r9b
+
 	jmp check_steps
 
 JZ:
+	mov r8b, byte[r11 + Z_IND]
+	test r8b, r8b
+	jz check_steps
+
+	add byte[r11 + PC_IND], r9b
+
 	jmp check_steps
 
 BRK:
