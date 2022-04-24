@@ -116,7 +116,8 @@ check_steps:
 ;	jmp [rel jump + 16]
 
 .first_group:
-	lea [rel cur_proc], check_steps.first_group
+	lea r10, [rel check_steps.first_group]
+	mov qword[rel cur_proc], r10
 
 	mov r10, rax ; arg1
 	shl r10, CLEAR_LEFT_A1   ; divide by 0x100
@@ -125,10 +126,13 @@ check_steps:
 	mov r9, rax  ; arg2
 	shr r9, CLEAR_RIGHT_A2  ; nothing before
 
+.first_inner:
+
 	jmp [rcx + 8*rax]
 
 .second_group:
-	lea [rel cur_proc], [check_steps.first_group]
+;	lea r10, [rel check_steps.second_group]
+;	lea [rel cur_proc], [check_steps.first_group]
 
 	mov r10, rax  ; arg1
 	shl r10, CLEAR_LEFT_A1
@@ -138,6 +142,8 @@ check_steps:
 
 	shl rax, CLEAR_LEFT_A2
 	shr rax, CLEAR_RIGHT_AFTER_LEFT
+
+.second_inner:
 
 	jmp [rcx + 8*(rax + SECOND_GR_ADDR_CONST)]
 ;	mov r9w, al ; imm8
