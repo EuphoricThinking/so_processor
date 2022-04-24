@@ -69,12 +69,14 @@ check_steps:
 	test rdx, rdx
 	jz .no_steps_left
 
-	mov r10, [rdi]   ; a value from code
+	lea r10, [rel state + PC_IND]
+	mov r10, [rdi + r10]   ; a value from code
 	cmp r10w, 0xFFFF
 	je .no_steps_left
 
-	movzx rax, r10w ; a value to operate on
 	dec rdx
+
+	movzx rax, r10w ; a value to operate on
 
 	mov r9w, GROUP_SELECTOR  ; a selector to compare with a value from code
 	and r9w, r10w
@@ -172,7 +174,7 @@ check_steps:
 
 after_instruction:
 	add rdi, 16
-	jmp after_instruction
+	jmp check_steps
 
 procedure1:
 	mov rax, 3
