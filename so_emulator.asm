@@ -120,6 +120,8 @@ check_steps:
 .first_r9:
 	mov r9b, byte[r8]   ; arg2 - insert value, not address
 
+	movsx rax, al
+;	ret
 	jmp [rcx + 8*rax]
 
 .second_group:
@@ -177,7 +179,7 @@ check_steps:
 .x_y_plus:
 	and r8, 1
 	movzx r8, byte[r11 + 2 + r8]
-	add r8, [r11 + D_IND]
+	add r8b, byte[r11 + D_IND]
 	lea r8, [rsi + r8]
 	jmp [rel cur_proc]
 
