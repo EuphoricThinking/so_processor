@@ -80,6 +80,7 @@ so_emul:
     push rbx
     push r12
     push r13
+    push r14
 
     xor r12, r12 ; Current thread doesn't use spinlock
     mov r13d, 1  ; temporary spinlock flag
@@ -257,6 +258,7 @@ check_steps:
 ;	mov byte [rel state + Z_IND], 1
 	mov rax, [rcx]
 
+    pop r14
     pop r13
 	pop r12
 	pop rbx
@@ -444,11 +446,12 @@ XCHG:
     test r9b, MEM_ADDR_CODE
     jnz .non_atomic
 
-    jmp .atomic
+    jmp .get_args
+    
 .non_atomic:
     mov r12, SPINLOCK_XCHG
 
-.atomic:
+.get_args:
     mov r8w, r10w
     lea rbx, [rel XCHG.xchg_r10]
     jmp .read_address_of_arg_val ; spinlock is acquired in this function,
@@ -461,7 +464,12 @@ XCHG:
     jmp .read_address_of_arg_val ; spinlock is acquired in this function,
 
 .xchg_r9:
-    xchg byte[r10], r8b
+    mov r9, r8 ; r8 stores address; r9 is temporary
+    mov r8b, byte[r8]
+    mov byte[r10], r8b
+
+    mov r10, byte[r10]
+    mov byte[r9], r10b
 
     cmp r12, SPINLOCK_XCHG
     jne check_steps
