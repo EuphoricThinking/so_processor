@@ -68,15 +68,27 @@ so_emul:
 	lea r11, [rel instructions]
 	lea rcx, [rel state]
 
+;	mov rax, CORES
+;	cmp rax, 1
+;	je .single_core
+;
+;	sub rcx, 1
+;	lea r8, [rel state]
+;	lea rcx, [r8 + 8*rcx]
+;
+;	jmp check_steps
+;.single_core:
+;	lea rcx, [rel state]
+
 check_steps:
 	test rdx, rdx
 	jz .no_steps_left
 
-	movzx r10, byte[rel state + PC_IND]
+	movzx r10, byte[rcx + PC_IND]
 	mov r10w, word[rdi + 2*r10]   ; a value from code
 
 	dec rdx
-	inc byte [rel state + PC_IND]
+	inc byte [rcx + PC_IND]
 
 	cmp r10w, 0xFFFF
 	je .no_steps_left
