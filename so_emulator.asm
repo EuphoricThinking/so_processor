@@ -466,15 +466,20 @@ XCHG:
     jmp read_address_of_arg_val ; spinlock is acquired in this function,
 
 .xchg_r9:
-    mov r9, r8 ; r8 stores address; r9 is temporary
-    mov r8b, byte[r8]
-    mov byte[r10], r8b
+    ; r8 to r9
+    ; r10 to r8
+    mov r9b, byte[r8]           ; r8 stores address; r9 is temporary address
+    mov r14b, byte[r10]       ; r14 stores value
 
-    mov r10b, byte[r10]
-    mov byte[r9], r10b
+    ;mov r8b, byte[r8]
+    mov byte[r10], r9b  ;r8b to r9b
 
-    movzx r9, byte[r9]
-    movzx r10, byte[r10]
+;    mov r10b, byte[r10]
+;    mov byte[r89], r10b
+    mov byte[r8], r14b
+
+;    movzx r9, byte[r9]
+;    movzx r10, byte[r10]
 
     cmp r12, SPINLOCK_XCHG
     jne check_steps

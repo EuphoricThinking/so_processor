@@ -85,6 +85,7 @@ static const uint16_t code_mul[MEM_SIZE] = {
 // uruchomione rdzenie. Wartość parametru addr jest ustalana indywidualnie dla
 // każdego rdzenia przy uruchamianiu procesora.
 static const uint16_t code_inc[MEM_SIZE] = {
+//  0xFFFF,
   0x4000 + 0x100 * 3,               // MOVI Y, addr
   0xC000 + 18,                      // JMP  +18
 
