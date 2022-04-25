@@ -4,6 +4,10 @@ global so_emul
 
 %define last_bit 1 &
 
+%ifndef CORES
+%define CORES 1
+%endif
+
 ; position in rax
 A_POS equ 56
 D_POS equ 48
@@ -49,7 +53,7 @@ instructions: dq MOV, EMPT, OR, EMPT, ADD, SUB, ADC, SBB, XCHG, \
 
 section .bss
 align 8		; A D X Y PC C Z
-state: resb 8
+state: resb 8*CORES
 					;SETcc instructions!
 
 testtab: resb 4
