@@ -65,6 +65,7 @@ cur_proc: dq 1
 section .text
 
 so_emul:
+    push rbx
 	lea r11, [rel instructions]
 	lea rcx, [rel state]
 
@@ -113,8 +114,9 @@ check_steps:
 	jmp check_steps
 
 .first_group:
-	lea r10, [rel check_steps.first_r10]
-	mov qword[rel cur_proc], r10
+;	lea r10, [rel check_steps.first_r10]
+;	mov qword[rel cur_proc], r10
+    lea rbx, [rel check_steps.first_r10]
 
 	mov r8, rax ; arg1      ; r10
 	shl r8w, CLEAR_LEFT_A1   ; clear arg2 from left bits
@@ -125,8 +127,9 @@ check_steps:
 .first_r10:
 	mov r10, r8  ; arg1, address
 
-	lea r9, [rel check_steps.first_r9]
-	mov qword[rel cur_proc], r9
+;	lea r9, [rel check_steps.first_r9]
+;	mov qword[rel cur_proc], r9
+    lea rbx, [rel check_steps.first_r9]
 
 	mov r8, rax  ; arg2     ; r9
 	shr r8w, CLEAR_RIGHT_A2  ; nothing before
@@ -141,8 +144,9 @@ check_steps:
 	jmp [r11 + 8*rax]
 
 .second_group:
-	lea r10, [rel check_steps.second_r10]
-	mov qword[rel cur_proc], r10
+;	lea r10, [rel check_steps.second_r10]
+;	mov qword[rel cur_proc], r10
+    lea rbx, [rel check_steps.second_r10]
 
 	mov r8, rax  ; arg1   ; r10
 	shl r8w, CLEAR_LEFT_A1
@@ -181,7 +185,8 @@ check_steps:
 	jnz .x_y_test
 
 	lea r8, [rcx + r8]
-	jmp [rel cur_proc]
+;	jmp [rel cur_proc]
+    jmp rbx
 
 .x_y_test:
 	test r8, 2
@@ -190,19 +195,23 @@ check_steps:
 	and r8, 1
 	movzx r8, byte[rcx + 2 + r8] ; it's uint8_t, unsigned
 	lea r8, [rsi + r8]
-	jmp [rel cur_proc]
+;	jmp [rel cur_proc]
+    jmp rbx
 
 .x_y_plus:
 	and r8, 1
 	movzx r8, byte[rcx + 2 + r8]
 	add r8b, byte[rcx + D_IND]
 	lea r8, [rsi + r8]
-	jmp [rel cur_proc]
+;   jmp [rel cur_proc]
+    jmp rbx
 
 .no_steps_left:
 ;	mov byte [rel state + C_IND], 1
 ;	mov byte [rel state + Z_IND], 1
 	mov rax, [rcx]
+	pop rbx
+
 	ret
 
 procedure1:
