@@ -67,13 +67,12 @@ section .text
 so_emul:
     push rbx
 	lea r11, [rel instructions]
-	lea rcx, [rel state]
+;	lea rcx, [rel state]
 
 	mov rax, CORES
 	cmp rax, 1
 	je .single_core
 
-	sub rcx, 1
 	lea r8, [rel state]
 	lea rcx, [r8 + 8*rcx]
 
