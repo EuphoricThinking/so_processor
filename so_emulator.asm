@@ -229,7 +229,7 @@ check_steps:
     mov r12, 1 ; indicates that the current core owns spinlock
 
 .spinlock_acquired:
-	test r8, X_Y_PLUS_CODE
+	test r8b, X_Y_PLUS_CODE
 	jnz .x_y_plus
 
 	and r8, 1
@@ -419,20 +419,27 @@ JZ:
 BRK:
 	jmp check_steps
 
+;MEM_ADDR_CODE equ 4
+;X_Y_PLUS_CODE equ 2
+;X_Y_BIAS equ 2
 XCHG:
-    mov r10, rax
-    shl r10w, CLEAR_LEFT_A1   ; clear arg2 from left bits
+    mov r10, rax ; arg1
+    shl r10w, CLEAR_LEFT_A1   ; clear arg1 from left bits
     shr r10w, CLEAR_RIGHT_AFTER_LEFT
 
     mov r9, rax  ; arg2     ; r9
     shr r9w, CLEAR_RIGHT_A2
 
-    test r10b, 4
+    test r10b, MEM_ADDR_CODE
     jz .non_atomic
 
-    test r9b, 4
-    jz .non_atomic
+    test r9b, MEM_ADDR_CODE
+    jnz .non_atomic
 
+    mov r8w, r10w
+    lea rbx, [rel XCHG.xchg_r10]
+
+.xchg_r10:
 .non_atomic:
 
 	jmp check_steps
