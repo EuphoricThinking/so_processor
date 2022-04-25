@@ -68,17 +68,17 @@ so_emul:
 	lea r11, [rel instructions]
 	lea rcx, [rel state]
 
-;	mov rax, CORES
-;	cmp rax, 1
-;	je .single_core
-;
-;	sub rcx, 1
-;	lea r8, [rel state]
-;	lea rcx, [r8 + 8*rcx]
-;
-;	jmp check_steps
-;.single_core:
-;	lea rcx, [rel state]
+	mov rax, CORES
+	cmp rax, 1
+	je .single_core
+
+	sub rcx, 1
+	lea r8, [rel state]
+	lea rcx, [r8 + 8*rcx]
+
+	jmp check_steps
+.single_core:
+	lea rcx, [rel state]
 
 check_steps:
 	test rdx, rdx
