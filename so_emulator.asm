@@ -433,6 +433,8 @@ BRK:
 ;SPINLOCK_OWNED equ 1
 ;SPINLOCK_XCHG equ 2
 XCHG:
+;    jmp check_steps
+
     mov r10, rax ; arg1
     shl r10w, CLEAR_LEFT_A1   ; clear arg1 from left bits
     shr r10w, CLEAR_RIGHT_AFTER_LEFT
@@ -452,14 +454,14 @@ XCHG:
     mov r12, SPINLOCK_XCHG
 
 .get_args:
-    mov r8w, r10w
+    mov r8, r10
     lea rbx, [rel XCHG.xchg_r10]
     jmp read_address_of_arg_val ; spinlock is acquired in this function,
 
 .xchg_r10:
     mov r10, r8
 
-    mov r8w, r9w
+    mov r8, r9
     lea rbx, [rel XCHG.xchg_r9]
     jmp read_address_of_arg_val ; spinlock is acquired in this function,
 
@@ -470,6 +472,9 @@ XCHG:
 
     mov r10b, byte[r10]
     mov byte[r9], r10b
+
+    movzx r9, byte[r9]
+    movzx r10, byte[r10]
 
     cmp r12, SPINLOCK_XCHG
     jne check_steps
