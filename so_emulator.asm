@@ -42,6 +42,9 @@ MEM_ADDR_CODE equ 4
 X_Y_PLUS_CODE equ 2
 X_Y_BIAS equ 2
 
+SPINLOCK_OWNED equ 1
+SPINLOCK_XCHG equ 2
+
 CLEAR_LEFT_A1 equ 5
 CLEAR_RIGHT_AFTER_LEFT equ 13
 
@@ -101,6 +104,7 @@ check_steps:
 
     mov dword[rel spin_lock], r13d ; change to 0?
     mov r13d, 1
+    xor r12, r12
 
 .clean_spinlock:
 	test rdx, rdx
@@ -207,6 +211,8 @@ check_steps:
 ;MEM_ADDR_CODE equ 4
 ;X_Y_PLUS_CODE equ 2
 ;X_Y_BIAS equ 2
+;SPINLOCK_OWNED equ 1
+;SPINLOCK_XCHG equ 2
 .read_address_of_arg_val:
 	test r8b, MEM_ADDR_CODE
 	jnz .x_y_test
@@ -226,7 +232,7 @@ check_steps:
     test r13d, r13d
     jnz .spinlock_wait
 
-    mov r12, 1 ; indicates that the current core owns spinlock
+    mov r12, SPINLOCK_OWNED ; indicates that the current core owns spinlock
 
 .spinlock_acquired:
 	test r8b, X_Y_PLUS_CODE
@@ -422,6 +428,8 @@ BRK:
 ;MEM_ADDR_CODE equ 4
 ;X_Y_PLUS_CODE equ 2
 ;X_Y_BIAS equ 2
+;SPINLOCK_OWNED equ 1
+;SPINLOCK_XCHG equ 2
 XCHG:
     mov r10, rax ; arg1
     shl r10w, CLEAR_LEFT_A1   ; clear arg1 from left bits
@@ -436,7 +444,11 @@ XCHG:
     test r9b, MEM_ADDR_CODE
     jnz .non_atomic
 
-    ; finally atomic
+    jmp .atomic
+.non_atomic:
+    mov r12, SPINLOCK_XCHG
+
+.atomic:
     mov r8w, r10w
     lea rbx, [rel XCHG.xchg_r10]
     jmp .read_address_of_arg_val ; spinlock is acquired in this function,
@@ -451,9 +463,9 @@ XCHG:
 .xchg_r9:
     xchg byte[r10], r8b
 
-    jmp check_steps
+    cmp r12, SPINLOCK_XCHG
+    jne check_steps
 
+    xor r12, r12
 
-.non_atomic:
-    
 	jmp check_steps
