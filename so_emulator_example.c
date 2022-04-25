@@ -91,7 +91,7 @@ static const uint16_t code_inc[MEM_SIZE] = {
   0x4000 + 0x100 * 0 + 1,           // MOVI A, 1
   0x4000 + 0x100 * 2 + 5,           // MOVI X, 5 
  
- 0x0008 + 0x100 * 4 + 0x0800 * 0,  // XCHG [X], A
+  0x0008 + 0x100 * 4 + 0x0800 * 0,  // XCHG [X], A
   0x6800 + 0x100 * 0 + 0,           // CMPI A, 0
   0xC400 + (uint8_t)-3,             // JNZ  -3
 
@@ -226,10 +226,10 @@ int main(int argc, char *args[]) {
   if (argc == 1)
     single_core_simple_test();
   else if (argc == 2) {
-  printf("before test\n");
-  dump_cpu_state(0, so_emul(code_inc, data, 30, 0), data);
+//  printf("before test\n");
+//  dump_cpu_state(0, so_emul(code_inc, data, 30, 0), data);
   printf("before multi\n");
- //   multi_core_inc_test(strtoumax(args[1], NULL, 10));
+    multi_core_inc_test(strtoumax(args[1], NULL, 10));
  } else if (argc == 3) {
   
     single_core_mul_test(strtoumax(args[1], NULL, 10), strtoumax(args[2], NULL, 10));
