@@ -197,14 +197,16 @@ check_steps:
 
 .read_address_of_arg_val:
 	test r8b, 4
-;	jnz .x_y_test
-    jnz .spinlock_wait
+	jnz .x_y_test
+;    jnz .spinlock_wait
 
 	lea r8, [rcx + r8]
 ;	jmp [rel cur_proc]
     jmp rbx
 
-;.x_y_test:
+.x_y_test:
+    test r12, r12
+    jnz .spinlock_acquired ; we have the previous spinlock
     ; From this section and further, it is known that address from data memory
     ; will be used
 .spinlock_wait:
@@ -214,6 +216,7 @@ check_steps:
 
     mov r12, 1 ; indicates that the current core owns spinlock
 
+.spinlock_acquired:
 	test r8, 2
 	jnz .x_y_plus
 
