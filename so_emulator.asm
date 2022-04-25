@@ -4,7 +4,7 @@ global so_emul
 %define CORES 1
 %endif
 
-; index in state table
+; Indices in the state table
 A_IND equ 0
 D_IND equ 1
 X_IND equ 2
@@ -36,6 +36,7 @@ X_Y_BIAS equ 2
 SPINLOCK_OWNED equ 1
 SPINLOCK_XCHG equ 2      ; mocking acquired spinlock for lack of atomicity in xchg
 
+; Number of bits for bitshifting arg1 and arg2 in order to extract the exact values
 CLEAR_LEFT_A1 equ 5
 CLEAR_RIGHT_AFTER_LEFT equ 13
 
@@ -80,7 +81,6 @@ so_emul:
     mov r13d, 1  ; temporary spinlock flag
 
 	lea r11, [rel instructions]
-;	lea rcx, [rel state]
 
 	mov rax, CORES
 	cmp rax, 1
@@ -223,7 +223,7 @@ read_address_of_arg_val:
 .x_y_test:
     test r12, r12
     jnz .spinlock_acquired ; we have the previous spinlock
-    ; From this section and further, it is known that address from data memory
+    ; From this section and further, it is known that the address from data memory
     ; will be used
 .spinlock_wait:
     xchg dword[rel spin_lock], r13d
@@ -236,8 +236,8 @@ read_address_of_arg_val:
 	test r8b, X_Y_PLUS_CODE
 	jnz .x_y_plus
 
-    ; value under the address which is the value of register X or Y
-	and r8b, 1   ; codes differ at one bit
+    ; Value under the address which is the value of a register X or Y
+	and r8b, 1   ; Codes differ at one bit
 	movzx r8, byte[rcx + X_Y_BIAS + r8] ; it's uint8_t, unsigned; move x or y to register
 	lea r8, [rsi + r8]
 
@@ -276,16 +276,19 @@ SUB:
 	jmp check_steps
 
 ADC:
-	test byte[rcx + C_IND], 1
-	jnz .set_cf_adc
+;	test byte[rcx + C_IND], 1
+;	jnz .set_cf_adc
 
-	clc
-	jmp .after_set_adc
+;	clc
+;	jmp .after_set_adc
 
-.set_cf_adc:
-	stc
+;.set_cf_adc:
+;	stc
 
-.after_set_adc:
+;.after_set_adc:
+    mov r8b, 0xFF
+    add r8b, [rcx + C_IND]
+
 	adc byte[r10], r9b
 	setc byte[rcx + C_IND]
 	setz byte[rcx + Z_IND]
@@ -293,16 +296,19 @@ ADC:
 	jmp check_steps
 
 SBB:
-	test byte[rcx + C_IND], 1
-	jnz .set_cf_sbb
+;	test byte[rcx + C_IND], 1
+;	jnz .set_cf_sbb
 
-	clc
-	jmp .after_set_sbb
+;	clc
+;	jmp .after_set_sbb
 
-.set_cf_sbb:
-	stc
+;.set_cf_sbb:
+;	stc
 
-.after_set_sbb:
+;.after_set_sbb:
+    mov r8b, 0xFF
+    add r8b, [rcx + C_IND]
+
 	sbb byte[r10], r9b
 	setc byte[rcx + C_IND]
 	setz byte[rcx + Z_IND]
