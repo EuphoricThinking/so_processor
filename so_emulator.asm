@@ -54,18 +54,24 @@ instructions: dq MOV, EMPT, OR, EMPT, ADD, SUB, ADC, SBB, XCHG, \
 section .bss
 align 8		; A D X Y PC C Z
 state: resb 8*CORES
+
+alignb 4
+spin_lock: resd 1
 					;SETcc instructions!
 
-testtab: resb 4
+;testtab: resb 4
 ;cur_proc: resq 1
 
-section .data
-cur_proc: dq 1
+;section .data
+;cur_proc: dq 1
 
 section .text
 
 so_emul:
     push rbx
+    push r12
+
+    xor r12, r12 ; Current thread doesn't use spinlock
 	lea r11, [rel instructions]
 ;	lea rcx, [rel state]
 
@@ -85,7 +91,7 @@ check_steps:
 	jz .no_steps_left
 
 	movzx r10, byte[rcx + PC_IND]
-	mov r10w, word[rdi + 2*r10]   ; a value from code
+	lock mov r10w, word[rdi + 2*r10]   ; a value from code
 
 	dec rdx
 	inc byte [rcx + PC_IND]
@@ -209,6 +215,8 @@ check_steps:
 ;	mov byte [rel state + C_IND], 1
 ;	mov byte [rel state + Z_IND], 1
 	mov rax, [rcx]
+
+	pop r12
 	pop rbx
 
 	ret
