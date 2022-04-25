@@ -276,16 +276,6 @@ SUB:
 	jmp check_steps
 
 ADC:
-;	test byte[rcx + C_IND], 1
-;	jnz .set_cf_adc
-
-;	clc
-;	jmp .after_set_adc
-
-;.set_cf_adc:
-;	stc
-
-;.after_set_adc:
     mov r8b, 0xFF
     add r8b, [rcx + C_IND]
 
@@ -296,16 +286,6 @@ ADC:
 	jmp check_steps
 
 SBB:
-;	test byte[rcx + C_IND], 1
-;	jnz .set_cf_sbb
-
-;	clc
-;	jmp .after_set_sbb
-
-;.set_cf_sbb:
-;	stc
-
-;.after_set_sbb:
     mov r8b, 0xFF
     add r8b, [rcx + C_IND]
 
