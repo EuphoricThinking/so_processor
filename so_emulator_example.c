@@ -142,7 +142,7 @@ int main() {
 //	dump_cpu_state(0, so_emul(code_mov, data, 10, 0), data);
 //  dump_memory(data);
 //	single_core_mul_test(61, 18);
-	dump_cpu_state(0, so_emul(code_mov, data, 30, 0), data);
+	dump_cpu_state(0, so_emul(code_inc, data, SIZE_MAX, 0), data);
 
 	return 0;
 }
