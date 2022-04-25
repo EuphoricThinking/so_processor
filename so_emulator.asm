@@ -65,6 +65,8 @@ cur_proc: dq 1
 section .text
 
 so_emul:
+	mov rax, CORES
+
 	lea rcx, [rel instructions]
 	lea r11, [rel state]
 
