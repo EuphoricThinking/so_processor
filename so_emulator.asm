@@ -66,6 +66,10 @@ section .text
 
 so_emul:
 	push rbx
+
+	mov rax, CORES
+	lea rcx, [8*rcx]
+	mov rcx, [rcx]
 	lea rbx, [rel instructions]
 	lea r11, [rel state]
 
@@ -73,11 +77,11 @@ check_steps:
 	test rdx, rdx
 	jz .no_steps_left
 
-	movzx r10, byte[rel state + 8*rcx + PC_IND]
+	movzx r10, byte[rel state + rcx + PC_IND]
 	mov r10w, word[rdi + 2*r10]   ; a value from code
 
 	dec rdx
-	inc byte [rel state + PC_IND]
+	inc byte [rel state + rcx + PC_IND]
 
 	cmp r10w, 0xFFFF
 	je .no_steps_left
@@ -169,7 +173,7 @@ check_steps:
 	test r8b, 4
 	jnz .x_y_test
 
-	lea r8, [r11 + r8]
+;	lea r8, [r11 + rcx + r8]
 	jmp [rel cur_proc]
 
 .x_y_test:
@@ -177,14 +181,14 @@ check_steps:
 	jnz .x_y_plus
 
 	and r8, 1
-	movzx r8, byte[r11 + 2 + r8] ; it's uint8_t, unsigned
+;	movzx r8, byte[r11 + rcx + 2 + r8] ; it's uint8_t, unsigned
 	lea r8, [rsi + r8]
 	jmp [rel cur_proc]
 
 .x_y_plus:
 	and r8, 1
-	movzx r8, byte[r11 + 2 + r8]
-	add r8b, byte[r11 + D_IND]
+;	movzx r8, byte[r11 + rcx + 2 + r8]
+	add r8b, byte[r11 + rcx + D_IND]
 	lea r8, [rsi + r8]
 	jmp [rel cur_proc]
 
@@ -211,24 +215,24 @@ MOV:
 
 OR:
 	or byte[r10], r9b
-	setz byte[r11 + Z_IND]
+	setz byte[r11 + rcx + Z_IND]
 
 	jmp check_steps
 
 ADD:
 	add byte[r10], r9b
-	setz byte[r11 + Z_IND]
+	setz byte[r11 + rcx + Z_IND]
 
 	jmp check_steps
 
 SUB:
 	sub byte[r10], r9b
-	setz byte[r11 + Z_IND]
+	setz byte[r11 + rcx + Z_IND]
 
 	jmp check_steps
 
 ADC:
-	test byte[r11 + C_IND], 1
+	test byte[r11 + rcx + C_IND], 1
 	jnz .set_cf_adc
 
 	clc
@@ -239,13 +243,13 @@ ADC:
 
 .after_set_adc:
 	adc byte[r10], r9b
-	setc byte[r11 + C_IND]
-	setz byte[r11 + Z_IND]
+	setc byte[r11 + rcx + C_IND]
+	setz byte[r11 + rcx + Z_IND]
 
 	jmp check_steps
 
 SBB:
-	test byte[r11 + C_IND], 1
+	test byte[r11 + rcx + C_IND], 1
 	jnz .set_cf_sbb
 
 	clc
@@ -256,8 +260,8 @@ SBB:
 
 .after_set_sbb:
 	sbb byte[r10], r9b
-	setc byte[r11 + C_IND]
-	setz byte[r11 + Z_IND]
+	setc byte[r11 + rcx + C_IND]
+	setz byte[r11 + rcx + Z_IND]
 
 	jmp check_steps
 
@@ -268,13 +272,13 @@ MOVI:
 
 XORI:
 	xor byte[r10], r9b
-	setz byte[r11 + Z_IND]
+	setz byte[r11 + rcx + Z_IND]
 
 	jmp check_steps
 
 ADDI:
 	add byte[r10], r9b
-	setz byte[r11 + Z_IND]
+	setz byte[r11 + rcx + Z_IND]
 
 	jmp check_steps
 
@@ -283,13 +287,13 @@ EMPT:
 
 CMPI:
 	cmp byte[r10], r9b
-	setc byte[r11 + Z_IND]
-	setz byte[r11 + C_IND]
+	setc byte[r11 + rcx + Z_IND]
+	setz byte[r11 + rcx + C_IND]
 
 	jmp check_steps
 
 RCR:
-	test byte[r11 + C_IND], 1
+	test byte[r11 + rcx + C_IND], 1
 	jnz .set_cf_rcr
 
 	clc
@@ -300,58 +304,58 @@ RCR:
 
 .after_set_rcr:
 	rcr byte[r10], 1
-	setc byte[r11 + C_IND]
+	setc byte[r11 + rcx + C_IND]
 
 	jmp check_steps
 
 CLC:
-	mov byte[r11 + C_IND], 0
+	mov byte[r11 + rcx + C_IND], 0
 
 	jmp check_steps
 
 STC:
-	mov byte[r11 + C_IND], 1
+	mov byte[r11 + rcx + C_IND], 1
 
 	jmp check_steps
 
 JMP:
-	add byte[r11 + PC_IND], r9b
+	add byte[r11 + rcx + PC_IND], r9b
 
 	jmp check_steps
 
 JNC:
-	mov r8b, byte[r11 + C_IND]
+	mov r8b, byte[r11 + rcx + C_IND]
 	test r8b, r8b
 	jnz check_steps
 
-	add byte[r11 + PC_IND], r9b
+	add byte[r11 + rcx + PC_IND], r9b
 
 	jmp check_steps
 
 JC:
-	mov r8b, byte[r11 + C_IND]
+	mov r8b, byte[r11 + rcx + C_IND]
 	test r8b, r8b
 	jz check_steps
 
-	add byte[r11 + PC_IND], r9b
+	add byte[r11 + rcx + PC_IND], r9b
 
 	jmp check_steps
 
 JNZ:
-	mov r8b, byte[r11 + Z_IND]
+	mov r8b, byte[r11 + rcx + Z_IND]
 	test r8b, r8b
 	jnz check_steps
 
-	add byte[r11 + PC_IND], r9b
+	add byte[r11 + rcx + PC_IND], r9b
 
 	jmp check_steps
 
 JZ:
-	mov r8b, byte[r11 + Z_IND]
+	mov r8b, byte[r11 + rcx + Z_IND]
 	test r8b, r8b
 	jz check_steps
 
-	add byte[r11 + PC_IND], r9b
+	add byte[r11 + rcx + PC_IND], r9b
 
 	jmp check_steps
 
