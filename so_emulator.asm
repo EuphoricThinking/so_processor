@@ -436,10 +436,24 @@ XCHG:
     test r9b, MEM_ADDR_CODE
     jnz .non_atomic
 
+    ; finally atomic
     mov r8w, r10w
     lea rbx, [rel XCHG.xchg_r10]
+    jmp .read_address_of_arg_val ; spinlock is acquired in this function,
 
 .xchg_r10:
-.non_atomic:
+    mov r10, r8
 
+    mov r8w, r9w
+    lea rbx, [rel XCHG.xchg_r9]
+    jmp .read_address_of_arg_val ; spinlock is acquired in this function,
+
+.xchg_r9:
+    xchg byte[r10], r8b
+
+    jmp check_steps
+
+
+.non_atomic:
+    
 	jmp check_steps
