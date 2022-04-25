@@ -1,22 +1,22 @@
 global so_emul
 
-%define modulo 0xF &
+;%define modulo 0xF &
 
-%define last_bit 1 &
+;%define last_bit 1 &
 
 %ifndef CORES
 %define CORES 1
 %endif
 
 ; position in rax
-A_POS equ 56
-D_POS equ 48
-X_POS equ 40
-Y_POS equ 32
-PC_POS equ 24
+;A_POS equ 56
+;D_POS equ 48
+;X_POS equ 40
+;Y_POS equ 32
+;PC_POS equ 24
 ; 16 is empty
-C_POS equ 8
-Z_POS equ 0 ; nothing is needed
+;C_POS equ 8
+;Z_POS equ 0 ; nothing is needed
 
 ; index in state table
 A_IND equ 0
@@ -80,7 +80,7 @@ so_emul:
     push rbx
     push r12
     push r13
-    push r14
+;    push r14
 
     xor r12, r12 ; Current thread doesn't use spinlock
     mov r13d, 1  ; temporary spinlock flag
@@ -96,6 +96,7 @@ so_emul:
 	lea rcx, [r8 + 8*rcx]
 
 	jmp check_steps
+
 .single_core:
 	lea rcx, [rel state]
 
@@ -142,6 +143,7 @@ check_steps:
 .first_group:
 ;	lea r10, [rel check_steps.first_r10]
 ;	mov qword[rel cur_proc], r10
+
     cmp al, XCHG_CODE
     je XCHG
 
@@ -214,7 +216,7 @@ check_steps:
 ;	mov byte [rel state + Z_IND], 1
 	mov rax, [rcx]
 
-    pop r14
+;    pop r14
     pop r13
 	pop r12
 	pop rbx
@@ -251,14 +253,14 @@ read_address_of_arg_val:
 	test r8b, X_Y_PLUS_CODE
 	jnz .x_y_plus
 
-	and r8, 1
+	and r8b, 1
 	movzx r8, byte[rcx + X_Y_BIAS + r8] ; it's uint8_t, unsigned; move x or y to register
 	lea r8, [rsi + r8]
 ;	jmp [rel cur_proc]
     jmp rbx
 
 .x_y_plus:
-	and r8, 1
+	and r8b, 1
 	movzx r8, byte[rcx + X_Y_BIAS + r8] ; move x or y to register
 	add r8b, byte[rcx + D_IND]
 	lea r8, [rsi + r8]
@@ -352,8 +354,8 @@ EMPT:
 
 CMPI:
 	cmp byte[r10], r9b
-	setc byte[rcx + Z_IND]
-	setz byte[rcx + C_IND]
+	setc byte[rcx + C_IND]
+	setz byte[rcx + Z_IND]
 
 	jmp check_steps
 
@@ -469,14 +471,14 @@ XCHG:
     ; r8 to r9
     ; r10 to r8
     mov r9b, byte[r8]           ; r8 stores address; r9 is temporary address
-    mov r14b, byte[r10]       ; r14 stores value
+    mov al, byte[r10]       ; r14 stores value
 
     ;mov r8b, byte[r8]
     mov byte[r10], r9b  ;r8b to r9b
 
 ;    mov r10b, byte[r10]
 ;    mov byte[r89], r10b
-    mov byte[r8], r14b
+    mov byte[r8], al
 
 ;    movzx r9, byte[r9]
 ;    movzx r10, byte[r10]
