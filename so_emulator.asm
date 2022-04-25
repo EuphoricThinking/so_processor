@@ -36,6 +36,8 @@ SECOND_GR_ADDR_CONST equ 9
 THIRD_GR_ADDR_CONST equ 10
 FOURTH_GR_ADDR_CONST equ 16
 
+XCHG_CODE equ 8
+
 CLEAR_LEFT_A1 equ 5
 CLEAR_RIGHT_AFTER_LEFT equ 13
 
@@ -131,6 +133,9 @@ check_steps:
 .first_group:
 ;	lea r10, [rel check_steps.first_r10]
 ;	mov qword[rel cur_proc], r10
+    cmp al, XCHG_CODE
+    je XCHG
+
     lea rbx, [rel check_steps.first_r10]
 
 	mov r8, rax ; arg1      ; r10
@@ -408,4 +413,5 @@ BRK:
 	jmp check_steps
 
 XCHG:
+
 	jmp check_steps
