@@ -21,9 +21,9 @@ SECOND_GROUP equ 0x4000
 THIRD_GROUP equ 0x8000
 
 ; Constant biases in procedure addresses table (.bss table instructions)
-SECOND_GR_ADDR_CONST equ 9
-THIRD_GR_ADDR_CONST equ 10
-FOURTH_GR_ADDR_CONST equ 16
+SECOND_GR_ADDR_CONST equ 8
+THIRD_GR_ADDR_CONST equ 9
+FOURTH_GR_ADDR_CONST equ 15
 
 XCHG_CODE equ 8
 
@@ -43,7 +43,7 @@ CLEAR_RIGHT_A2 equ 11
 section .rodata
 align 16
 jump: dq procedure1, procedure1, procedure2
-instructions: dq MOV, EMPT, OR, EMPT, ADD, SUB, ADC, SBB, XCHG, \
+instructions: dq MOV, EMPT, OR, EMPT, ADD, SUB, ADC, SBB, \
 		 MOVI, \
 		 CLC, STC, \
 		 XORI, ADDI, CMPI, RCR, JMP, \
