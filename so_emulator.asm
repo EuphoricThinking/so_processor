@@ -1,22 +1,8 @@
 global so_emul
 
-;%define modulo 0xF &
-
-;%define last_bit 1 &
-
 %ifndef CORES
 %define CORES 1
 %endif
-
-; position in rax
-;A_POS equ 56
-;D_POS equ 48
-;X_POS equ 40
-;Y_POS equ 32
-;PC_POS equ 24
-; 16 is empty
-;C_POS equ 8
-;Z_POS equ 0 ; nothing is needed
 
 ; index in state table
 A_IND equ 0
@@ -25,13 +11,16 @@ X_IND equ 2
 Y_IND equ 3
 PC_IND equ 4
 
-C_IND equ 6  ; previous 5
-Z_IND equ 7  ; previous 7
+C_IND equ 6
+Z_IND equ 7
+
+; Selectors of the groups of instructions (MOV - XCHG, MOVI - RCR, CLC - STC, JMP - JZ
 
 GROUP_SELECTOR equ 0xC000
 SECOND_GROUP equ 0x4000
 THIRD_GROUP equ 0x8000
 
+; Constant biases in procedure addresses table (.bss table instructions)
 SECOND_GR_ADDR_CONST equ 9
 THIRD_GR_ADDR_CONST equ 10
 FOURTH_GR_ADDR_CONST equ 16
