@@ -200,7 +200,7 @@ static void multi_core_inc_test(uint32_t count) {
 
   for (size_t i = 0; i < CORES; ++i) {
     ctd[i].core = i;
-    ctd[i].steps = 30;//SIZE_MAX; // w praktyce nieskończoność
+    ctd[i].steps = 10000;//SIZE_MAX; // w praktyce nieskończoność 30
     ctd[i].code = code_inc;
   }
 
