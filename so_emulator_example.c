@@ -209,9 +209,9 @@ static void multi_core_inc_test(uint32_t count) {
       exit(1);
 
   wait = 1; // Wystartuj rdzenie.
-  printf("wait\n");
+//  printf("wait\n");
   for (size_t i = 0; i < CORES; ++i) {
-    printf("%d\n", i);
+//    printf("%d\n", i);
     if (pthread_join(tid[i], NULL))
       exit(1);
 }
@@ -228,7 +228,7 @@ int main(int argc, char *args[]) {
   else if (argc == 2) {
 //  printf("before test\n");
 //  dump_cpu_state(0, so_emul(code_inc, data, 30, 0), data);
-  printf("before multi\n");
+//  printf("before multi\n");
     multi_core_inc_test(strtoumax(args[1], NULL, 10));
  } else if (argc == 3) {
   
