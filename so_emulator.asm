@@ -70,8 +70,11 @@ section .text
 so_emul:
     push rbx
     push r12
+    push r13
 
     xor r12, r12 ; Current thread doesn't use spinlock
+    mov r13d, 1
+
 	lea r11, [rel instructions]
 ;	lea rcx, [rel state]
 
@@ -87,11 +90,18 @@ so_emul:
 	lea rcx, [rel state]
 
 check_steps:
+    test r12, r12
+    jz .clean_spinlock
+
+    mov dword[rel spin_lock], r13d
+    mov r13d, 1
+
+.clean_spinlock:
 	test rdx, rdx
 	jz .no_steps_left
 
 	movzx r10, byte[rcx + PC_IND]
-	lock mov r10w, word[rdi + 2*r10]   ; a value from code
+	mov r10w, word[rdi + 2*r10]   ; a value from code
 
 	dec rdx
 	inc byte [rcx + PC_IND]
@@ -187,13 +197,23 @@ check_steps:
 
 .read_address_of_arg_val:
 	test r8b, 4
-	jnz .x_y_test
+;	jnz .x_y_test
+    jnz .spinlock_wait
 
 	lea r8, [rcx + r8]
 ;	jmp [rel cur_proc]
     jmp rbx
 
-.x_y_test:
+;.x_y_test:
+    ; From this section and further, it is known that address from data memory
+    ; will be used
+.spinlock_wait:
+    xchg dword[rel spin_lock], r13d
+    test r13d, r13d
+    jnz .spinlock_wait
+
+    mov r12, 1 ; indicates that the current core owns spinlock
+
 	test r8, 2
 	jnz .x_y_plus
 
@@ -216,6 +236,7 @@ check_steps:
 ;	mov byte [rel state + Z_IND], 1
 	mov rax, [rcx]
 
+    pop r13
 	pop r12
 	pop rbx
 
