@@ -73,7 +73,7 @@ so_emul:
     push r13
 
     xor r12, r12 ; Current thread doesn't use spinlock
-    mov r13d, 1
+    mov r13d, 1  ; temporary spinlock flag
 
 	lea r11, [rel instructions]
 ;	lea rcx, [rel state]
@@ -93,7 +93,7 @@ check_steps:
     test r12, r12
     jz .clean_spinlock
 
-    mov dword[rel spin_lock], r13d
+    mov dword[rel spin_lock], r13d ; change to 0?
     mov r13d, 1
 
 .clean_spinlock:
