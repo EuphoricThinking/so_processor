@@ -65,14 +65,15 @@ cur_proc: dq 1
 section .text
 
 so_emul:
-	lea rcx, [rel instructions]
+	push rbx
+	lea rbx, [rel instructions]
 	lea r11, [rel state]
 
 check_steps:
 	test rdx, rdx
 	jz .no_steps_left
 
-	movzx r10, byte[rel state + PC_IND]
+	movzx r10, byte[rel state + 8*rcx + PC_IND]
 	mov r10w, word[rdi + 2*r10]   ; a value from code
 
 	dec rdx
@@ -126,7 +127,7 @@ check_steps:
 
 	movsx rax, al
 ;	ret
-	jmp [rcx + 8*rax]
+	jmp [rbx + 8*rax]
 
 .second_group:
 	lea r10, [rel check_steps.second_r10]
@@ -147,14 +148,14 @@ check_steps:
 	shl ax, CLEAR_LEFT_A2
 	shr ax, CLEAR_RIGHT_AFTER_LEFT
 
-	jmp [rcx + 8*(rax + SECOND_GR_ADDR_CONST)]
+	jmp [rbx + 8*(rax + SECOND_GR_ADDR_CONST)]
 
 .third_group:
 	mov r9, rax
 	shr r9, 8
 	and r9, 1
 
-	jmp [rcx + 8*(THIRD_GR_ADDR_CONST + r9)]
+	jmp [rbx + 8*(THIRD_GR_ADDR_CONST + r9)]
 
 .fourth_group:
 	mov r9b, al  ; imm8
@@ -162,7 +163,7 @@ check_steps:
 	shl ax, CLEAR_LEFT_A1
 	shr ax, CLEAR_RIGHT_AFTER_LEFT
 
-	jmp [rcx + 8*(rax + FOURTH_GR_ADDR_CONST)]
+	jmp [rbx + 8*(rax + FOURTH_GR_ADDR_CONST)]
 
 .read_address_of_arg_val:
 	test r8b, 4
@@ -191,6 +192,8 @@ check_steps:
 ;	mov byte [rel state + C_IND], 1
 ;	mov byte [rel state + Z_IND], 1
 	mov rax, [r11]
+	pop rbx
+
 	ret
 
 procedure1:
