@@ -151,7 +151,7 @@ check_steps:
 	shl r8w, CLEAR_LEFT_A1   ; clear arg2 from left bits
 	shr r8w, CLEAR_RIGHT_AFTER_LEFT
 
-	jmp .read_address_of_arg_val
+	jmp read_address_of_arg_val
 
 .first_r10:
 	mov r10, r8  ; arg1, address
@@ -163,7 +163,7 @@ check_steps:
 	mov r8, rax  ; arg2     ; r9
 	shr r8w, CLEAR_RIGHT_A2  ; nothing before
 
-	jmp .read_address_of_arg_val
+	jmp read_address_of_arg_val
 
 .first_r9:
 	mov r9b, byte[r8]   ; arg2 - insert value, not address
@@ -182,7 +182,7 @@ check_steps:
 
 	shr r8w, CLEAR_RIGHT_AFTER_LEFT
 
-	jmp .read_address_of_arg_val
+	jmp read_address_of_arg_val
 
 .second_r10:
 	mov r10, r8  ; arg1, address
@@ -209,12 +209,24 @@ check_steps:
 
 	jmp [r11 + 8*(rax + FOURTH_GR_ADDR_CONST)]
 
+.no_steps_left:
+;	mov byte [rel state + C_IND], 1
+;	mov byte [rel state + Z_IND], 1
+	mov rax, [rcx]
+
+    pop r14
+    pop r13
+	pop r12
+	pop rbx
+
+	ret
+
 ;MEM_ADDR_CODE equ 4
 ;X_Y_PLUS_CODE equ 2
 ;X_Y_BIAS equ 2
 ;SPINLOCK_OWNED equ 1
 ;SPINLOCK_XCHG equ 2
-.read_address_of_arg_val:
+read_address_of_arg_val:
 	test r8b, MEM_ADDR_CODE
 	jnz .x_y_test
 ;    jnz .spinlock_wait
@@ -252,18 +264,6 @@ check_steps:
 	lea r8, [rsi + r8]
 ;   jmp [rel cur_proc]
     jmp rbx
-
-.no_steps_left:
-;	mov byte [rel state + C_IND], 1
-;	mov byte [rel state + Z_IND], 1
-	mov rax, [rcx]
-
-    pop r14
-    pop r13
-	pop r12
-	pop rbx
-
-	ret
 
 procedure1:
 	mov rax, 3
@@ -447,28 +447,28 @@ XCHG:
     jnz .non_atomic
 
     jmp .get_args
-    
+
 .non_atomic:
     mov r12, SPINLOCK_XCHG
 
 .get_args:
     mov r8w, r10w
     lea rbx, [rel XCHG.xchg_r10]
-    jmp .read_address_of_arg_val ; spinlock is acquired in this function,
+    jmp read_address_of_arg_val ; spinlock is acquired in this function,
 
 .xchg_r10:
     mov r10, r8
 
     mov r8w, r9w
     lea rbx, [rel XCHG.xchg_r9]
-    jmp .read_address_of_arg_val ; spinlock is acquired in this function,
+    jmp read_address_of_arg_val ; spinlock is acquired in this function,
 
 .xchg_r9:
     mov r9, r8 ; r8 stores address; r9 is temporary
     mov r8b, byte[r8]
     mov byte[r10], r8b
 
-    mov r10, byte[r10]
+    mov r10b, byte[r10]
     mov byte[r9], r10b
 
     cmp r12, SPINLOCK_XCHG
