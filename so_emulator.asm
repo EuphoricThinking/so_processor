@@ -38,6 +38,10 @@ FOURTH_GR_ADDR_CONST equ 16
 
 XCHG_CODE equ 8
 
+MEM_ADDR_CODE equ 4
+X_Y_PLUS_CODE equ 2
+X_Y_BIAS equ 2
+
 CLEAR_LEFT_A1 equ 5
 CLEAR_RIGHT_AFTER_LEFT equ 13
 
@@ -200,8 +204,11 @@ check_steps:
 
 	jmp [r11 + 8*(rax + FOURTH_GR_ADDR_CONST)]
 
+;MEM_ADDR_CODE equ 4
+;X_Y_PLUS_CODE equ 2
+;X_Y_BIAS equ 2
 .read_address_of_arg_val:
-	test r8b, 4
+	test r8b, MEM_ADDR_CODE
 	jnz .x_y_test
 ;    jnz .spinlock_wait
 
@@ -222,18 +229,18 @@ check_steps:
     mov r12, 1 ; indicates that the current core owns spinlock
 
 .spinlock_acquired:
-	test r8, 2
+	test r8, X_Y_PLUS_CODE
 	jnz .x_y_plus
 
 	and r8, 1
-	movzx r8, byte[rcx + 2 + r8] ; it's uint8_t, unsigned
+	movzx r8, byte[rcx + X_Y_BIAS + r8] ; it's uint8_t, unsigned; move x or y to register
 	lea r8, [rsi + r8]
 ;	jmp [rel cur_proc]
     jmp rbx
 
 .x_y_plus:
 	and r8, 1
-	movzx r8, byte[rcx + 2 + r8]
+	movzx r8, byte[rcx + X_Y_BIAS + r8] ; move x or y to register
 	add r8b, byte[rcx + D_IND]
 	lea r8, [rsi + r8]
 ;   jmp [rel cur_proc]
@@ -413,5 +420,19 @@ BRK:
 	jmp check_steps
 
 XCHG:
+    mov r10, rax
+    shl r10w, CLEAR_LEFT_A1   ; clear arg2 from left bits
+    shr r10w, CLEAR_RIGHT_AFTER_LEFT
+
+    mov r9, rax  ; arg2     ; r9
+    shr r9w, CLEAR_RIGHT_A2
+
+    test r10b, 4
+    jz .non_atomic
+
+    test r9b, 4
+    jz .non_atomic
+
+.non_atomic:
 
 	jmp check_steps
