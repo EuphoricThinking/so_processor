@@ -73,12 +73,12 @@ section .text
 ; rcx - table address for the current core
 
 so_emul:
-    push rbx
-    push r12
-    push r13
+    	push rbx
+    	push r12
+    	push r13
 
-    xor r12, r12 ; Current thread doesn't use spinlock
-    mov r13d, 1  ; temporary spinlock flag
+    	xor r12, r12 ; Current thread doesn't use spinlock
+    	mov r13d, 1  ; temporary spinlock flag
 
 	lea r11, [rel instructions]
 
@@ -95,12 +95,12 @@ so_emul:
 	lea rcx, [rel state]
 
 check_steps:
-    test r12, r12
-    jz .clean_spinlock
+    	test r12, r12
+    	jz .clean_spinlock
 
-    mov dword[rel spin_lock], r13d ; assumed r13d = 0
-    mov r13d, 1
-    xor r12, r12
+    	mov dword[rel spin_lock], r13d ; assumed r13d = 0
+    	mov r13d, 1
+    	xor r12, r12
 
 .clean_spinlock:
 	test rdx, rdx
@@ -135,10 +135,10 @@ check_steps:
 	jmp check_steps
 
 .first_group:
-    cmp al, XCHG_CODE
-    je XCHG
+    	cmp al, XCHG_CODE
+    	je XCHG
 
-    lea rbx, [rel check_steps.first_r10]
+    	lea rbx, [rel check_steps.first_r10]
 
 	mov r8, rax                     ; arg1      ; r10
 	shl r8w, CLEAR_LEFT_A1          ; clear arg1 from left bits
@@ -149,7 +149,7 @@ check_steps:
 .first_r10:
 	mov r10, r8  ; arg1, address
 
-    lea rbx, [rel check_steps.first_r9]
+    	lea rbx, [rel check_steps.first_r9]
 
 	mov r8, rax  ; arg2     ; r9
 	shr r8w, CLEAR_RIGHT_A2  ; nothing before - empty left bits
@@ -164,7 +164,7 @@ check_steps:
 	jmp [r11 + 8*rax]
 
 .second_group:
-    lea rbx, [rel check_steps.second_r10]
+    	lea rbx, [rel check_steps.second_r10]
 
 	mov r8, rax                     ; arg1   ; r10
 	shl r8w, CLEAR_LEFT_A1
@@ -201,7 +201,7 @@ check_steps:
 .no_steps_left:
 	mov rax, [rcx]
 
-    pop r13
+    	pop r13
 	pop r12
 	pop rbx
 
@@ -218,30 +218,30 @@ read_address_of_arg_val:
 
 	lea r8, [rcx + r8]  ; register address
 
-    jmp rbx
+    	jmp rbx
 
 .x_y_test:
-    test r12, r12
-    jnz .spinlock_acquired ; we have the previous spinlock
-    ; From this section and further, it is known that the address from data memory
-    ; will be used
+    	test r12, r12
+    	jnz .spinlock_acquired ; we have the previous spinlock
+    	; From this section and further, it is known that the address from data memory
+    	; will be used
 .spinlock_wait:
-    xchg dword[rel spin_lock], r13d
-    test r13d, r13d
-    jnz .spinlock_wait
+    	xchg dword[rel spin_lock], r13d
+    	test r13d, r13d
+    	jnz .spinlock_wait
 
-    mov r12, SPINLOCK_OWNED ; indicates that the current core owns spinlock
+    	mov r12, SPINLOCK_OWNED ; indicates that the current core owns spinlock
 
 .spinlock_acquired:
 	test r8b, X_Y_PLUS_CODE
 	jnz .x_y_plus
 
-    ; Value under the address which is the value of a register X or Y
+    	; Value under the address which is the value of a register X or Y
 	and r8b, 1   ; Codes differ at one bit
 	movzx r8, byte[rcx + X_Y_BIAS + r8] ; it's uint8_t, unsigned; move x or y to register
 	lea r8, [rsi + r8]
 
-    jmp rbx
+    	jmp rbx
 
 .x_y_plus:
 	and r8b, 1
@@ -249,7 +249,7 @@ read_address_of_arg_val:
 	add r8b, byte[rcx + D_IND]
 	lea r8, [rsi + r8]
 
-    jmp rbx
+    	jmp rbx
 
 
 MOV:
@@ -276,8 +276,8 @@ SUB:
 	jmp check_steps
 
 ADC:
-    mov r8b, 0xFF
-    add r8b, [rcx + C_IND]
+    	mov r8b, 0xFF
+    	add r8b, [rcx + C_IND]
 
 	adc byte[r10], r9b
 	setc byte[rcx + C_IND]
@@ -286,8 +286,8 @@ ADC:
 	jmp check_steps
 
 SBB:
-    mov r8b, 0xFF
-    add r8b, [rcx + C_IND]
+    	mov r8b, 0xFF
+    	add r8b, [rcx + C_IND]
 
 	sbb byte[r10], r9b
 	setc byte[rcx + C_IND]
@@ -400,55 +400,55 @@ BRK:
 ;SPINLOCK_XCHG equ 2
 XCHG:
 
-    mov r10, rax                ; arg1
-    shl r10w, CLEAR_LEFT_A1     ; clear arg1 from left bits
-    shr r10w, CLEAR_RIGHT_AFTER_LEFT
+    	mov r10, rax                ; arg1
+    	shl r10w, CLEAR_LEFT_A1     ; clear arg1 from left bits
+    	shr r10w, CLEAR_RIGHT_AFTER_LEFT
 
-    mov r9, rax                 ; arg2     ; r9
-    shr r9w, CLEAR_RIGHT_A2
+	mov r9, rax                 ; arg2     ; r9
+    	shr r9w, CLEAR_RIGHT_A2
 
-    ; If the arg1 bit which is set for codes of arguments as addresses
-    ; is not set, xchg is non-atomic
-    test r10b, MEM_ADDR_CODE
-    jz .non_atomic
+   	; If the arg1 bit which is set for codes of arguments as addresses
+    	; is not set, xchg is non-atomic
+    	test r10b, MEM_ADDR_CODE
+    	jz .non_atomic
 
-    ; Reversely, the mentioned bit should not be set for arg2
-    test r9b, MEM_ADDR_CODE
-    jnz .non_atomic
+    	; Reversely, the mentioned bit should not be set for arg2
+    	test r9b, MEM_ADDR_CODE
+    	jnz .non_atomic
 
-    jmp .get_args
+    	jmp .get_args
 
 .non_atomic:
-    ; Mocks spinlock acquirement; since read_address_of_arg_val test only for
-    ; non-zero values, we can use different indicator values for different
-    ; purposes, leaving zero for unacquired spinlocks
-    mov r12, SPINLOCK_XCHG
+    	; Mocks spinlock acquirement; since read_address_of_arg_val test only for
+    	; non-zero values, we can use different indicator values for different
+    	; purposes, leaving zero for unacquired spinlocks
+    	mov r12, SPINLOCK_XCHG
 
 .get_args:
-    mov r8, r10
-    lea rbx, [rel XCHG.xchg_r10]
-    jmp read_address_of_arg_val ; spinlock is acquired in this function or ignored due to set r12
+    	mov r8, r10
+    	lea rbx, [rel XCHG.xchg_r10]
+    	jmp read_address_of_arg_val ; spinlock is acquired in this function or ignored due to set r12
 
 .xchg_r10:
-    mov r10, r8
+    	mov r10, r8
 
-    mov r8, r9
-    lea rbx, [rel XCHG.xchg_r9]
-    jmp read_address_of_arg_val ; spinlock is acquired in this function or ignored due to set r12
+    	mov r8, r9
+    	lea rbx, [rel XCHG.xchg_r9]
+    	jmp read_address_of_arg_val ; spinlock is acquired in this function or ignored due to set r12
 
 .xchg_r9:
 
-    mov r9b, byte[r8]       ; r8 stores address; r9 is a storage for value
-    mov al, byte[r10]       ; r10 stores address; al is a storage for value
+    	mov r9b, byte[r8]       ; r8 stores address; r9 is a storage for value
+    	mov al, byte[r10]       ; r10 stores address; al is a storage for value
 
-    ; Addresses in registers don't change, only values
-    mov byte[r10], r9b      ; value at r8  -> value at r10
-    mov byte[r8], al        ; value at r10 -> value at r8
+    	; Addresses in registers don't change, only values
+    	mov byte[r10], r9b      ; value at r8  -> value at r10
+    	mov byte[r8], al        ; value at r10 -> value at r8
 
-    cmp r12, SPINLOCK_XCHG
-    jne check_steps
+    	cmp r12, SPINLOCK_XCHG
+    	jne check_steps
 
-    ; Clears the mocked flag
-    xor r12, r12
+    	; Clears the mocked flag
+    	xor r12, r12
 
 	jmp check_steps
